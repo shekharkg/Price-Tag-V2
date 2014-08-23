@@ -1,0 +1,18 @@
+<resources>
+
+    <style name="MaterialActionBarTheme" parent="@android:style/Theme.Holo.Light.DarkActionBar">
+        <item name="android:actionOverflowButtonStyle">@style/OverFlow</item>
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+    </style>
+
+    <style name="OverFlow" parent="@android:style/Widget.Holo.ActionButton.Overflow">
+        <item name="android:src">@drawable/ic_menu_moreoverflow_mtrl_alpha</item>
+    </style>
+
+    <!-- ActionBar styles -->
+    <style name="MyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@color/material_teal</item>
+        <item name="android:icon">@android:color/transparent</item>
+    </style>
+
+</resources>
