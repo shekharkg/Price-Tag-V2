@@ -22,6 +22,10 @@ public class MyActivity extends Activity {
   private CharSequence mDrawerTitle;
   private CharSequence mTitle;
   public static String[] myDrawerListItem;
+  public int[] categoryImages = {R.drawable.cameras,R.drawable.computers,R.drawable.electronics,R.drawable.bikes
+      ,R.drawable.cars,R.drawable.books,R.drawable.lifestyle,R.drawable.baby_products,R.drawable.appliances
+      ,R.drawable.entertainment,R.drawable.flower_gifts,R.drawable.sports,R.drawable.health_beauty
+      ,R.drawable.home_decor,R.drawable.handicrafts,R.drawable.furniture};
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +40,8 @@ public class MyActivity extends Activity {
     // set a custom shadow that overlays the main content when the drawer opens
     mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
     // set up the drawer's list view with items and click listener
-    mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-        R.layout.drawer_list_item, myDrawerListItem));
+    SetDrawerImageTitle adapter = new SetDrawerImageTitle(this,myDrawerListItem,categoryImages);
+    mDrawerList.setAdapter(adapter);
     mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
     // enable ActionBar app icon to behave as action to toggle nav drawer
