@@ -11,8 +11,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import app.pricetag.com.price_tag.adapters.DrawerDataAdapter;
+import app.pricetag.com.price_tag.fragments.CategoryFragment;
 
 public class MyActivity extends Activity {
 
@@ -22,10 +23,6 @@ public class MyActivity extends Activity {
   private CharSequence mDrawerTitle;
   private CharSequence mTitle;
   public static String[] myDrawerListItem;
-  public static int[] categoryImages = {R.drawable.cameras,R.drawable.computers,R.drawable.electronics,R.drawable.bikes
-      ,R.drawable.cars,R.drawable.books,R.drawable.lifestyle,R.drawable.baby_products,R.drawable.appliances
-      ,R.drawable.entertainment,R.drawable.flower_gifts,R.drawable.sports,R.drawable.health_beauty
-      ,R.drawable.home_decor,R.drawable.handicrafts,R.drawable.furniture};
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +37,8 @@ public class MyActivity extends Activity {
     // set a custom shadow that overlays the main content when the drawer opens
     mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
     // set up the drawer's list view with items and click listener
-    mDrawerList.setAdapter(new SetDrawerImageTitle(this));
+    DrawerDataAdapter adapter = new DrawerDataAdapter(this);
+    mDrawerList.setAdapter(adapter);
     mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
     // enable ActionBar app icon to behave as action to toggle nav drawer
@@ -69,7 +67,7 @@ public class MyActivity extends Activity {
     mDrawerLayout.setDrawerListener(mDrawerToggle);
 
     //Define and set Fragment to container
-    getFragmentManager().beginTransaction().add(R.id.content_frame,new MyFragment()).commit();
+    getFragmentManager().beginTransaction().add(R.id.content_frame,new CategoryFragment()).commit();
 
     if (savedInstanceState == null) {
       //do action on startup

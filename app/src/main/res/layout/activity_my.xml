@@ -16,5 +16,7 @@
         android:layout_gravity="start"
         android:choiceMode="singleChoice"
         android:divider="@color/material_teal"
-        android:dividerHeight="2dp"/>
+        android:dividerHeight="2dp"
+        android:background="@color/almost_white_bg"/>
+
 </android.support.v4.widget.DrawerLayout>

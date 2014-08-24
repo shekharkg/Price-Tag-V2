@@ -1,0 +1,31 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="50dp"
+              android:orientation="horizontal" >
+
+    <com.pkmmte.view.CircularImageView
+        android:id="@+id/imageCategory"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center_horizontal"
+        android:clickable="false"
+        android:layout_marginLeft="3dp"
+        android:src="@drawable/ic_launcher"
+        android:scaleType="centerInside"
+        app:border="true"
+        app:border_color="@color/almost_white_bg"
+        app:border_width="1dp"
+        app:shadow="true"/>
+
+    <TextView
+        android:id="@+id/textCategory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="5dp"
+        android:text="Such Click"
+        android:textColor="@color/material_teal"
+        android:textSize="18sp"/>
+
+</LinearLayout>
