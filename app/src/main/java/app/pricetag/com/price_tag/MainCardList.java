@@ -5,9 +5,7 @@ import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.pkmmte.view.CircularImageView;
@@ -15,14 +13,14 @@ import com.pkmmte.view.CircularImageView;
 import java.util.ArrayList;
 
 /**
- * Created by shekhar on 23/8/14.
+ * Created by shekhar on 24/8/14.
  */
-public class SetDrawerImageTitle extends BaseAdapter{
+public class MainCardList extends BaseAdapter {
 
   ArrayList<ListRow> list;
   Context context;
 
-  public SetDrawerImageTitle(Context context) {
+  public MainCardList(Context context) {
     this.context = context;
     list = new ArrayList<ListRow>();
     Resources res = context.getResources();
@@ -55,7 +53,7 @@ public class SetDrawerImageTitle extends BaseAdapter{
   @Override
   public View getView(int position, View view, ViewGroup parent){
     LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    View row = inflater.inflate(R.layout.drawer_list_item,parent,false);
+    View row = inflater.inflate(R.layout.main_list_item_card,parent,false);
     CircularImageView circularImageView = (CircularImageView) row.findViewById(R.id.imageCategory);
     TextView textVIew = (TextView) row.findViewById(R.id.textCategory);
 
