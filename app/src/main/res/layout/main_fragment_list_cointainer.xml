@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:card="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
 
-    <ListView
-        android:id="@+id/listViewCard"
+    <it.gmariotti.cardslib.library.view.CardListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:choiceMode="singleChoice"
-        android:divider="@color/material_teal"
-        android:dividerHeight="2dp"
-        android:background="@color/almost_white_bg"/>
+        android:id="@+id/card_list"
+        card:list_card_layout_resourceID="@layout/list_card_thumbnail_layout" />
 
 </LinearLayout>

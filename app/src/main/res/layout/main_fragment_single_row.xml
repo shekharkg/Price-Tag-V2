@@ -1,32 +1,38 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="horizontal"
-              android:background="@color/almost_white_bg" >
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
 
     <com.pkmmte.view.CircularImageView
         android:id="@+id/imageCategory"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
         android:layout_gravity="center_horizontal"
         android:clickable="false"
-        android:layout_marginLeft="15dp"
-        android:src="@drawable/ic_launcher"
+        android:layout_marginLeft="10dp"
+        android:src="@drawable/cameras"
         android:scaleType="centerInside"
         app:border="true"
         app:border_color="@color/almost_white_bg"
         app:border_width="1dp"
         app:shadow="true"/>
 
+    <!-- Use same ID to use built-in features -->
     <TextView
-        android:id="@+id/textCategory"
+        android:layout_toRightOf="@id/imageCategory"
+        android:id="@+id/card_main_inner_simple_title"
+        android:layout_marginLeft="10dp"
+        android:gravity="center"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginLeft="5dp"
-        android:text="Such Click"
+        android:layout_height="match_parent"
+        android:text="Title"
         android:textColor="@color/material_teal"
-        android:textSize="28sp"/>
+        android:textSize="28sp"
+        android:textStyle="bold"/>
 
-</LinearLayout>
+
+</RelativeLayout>
+
