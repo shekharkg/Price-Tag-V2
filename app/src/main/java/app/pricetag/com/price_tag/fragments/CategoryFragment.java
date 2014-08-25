@@ -8,6 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.nhaarman.listviewanimations.swinginadapters.AnimationAdapter;
+import com.nhaarman.listviewanimations.swinginadapters.prepared.ScaleInAnimationAdapter;
 import com.pkmmte.view.CircularImageView;
 import java.util.ArrayList;
 import app.pricetag.com.price_tag.R;
@@ -24,6 +27,7 @@ public class CategoryFragment extends Fragment {
       ,R.drawable.cars,R.drawable.books,R.drawable.lifestyle,R.drawable.baby_products,R.drawable.appliances
       ,R.drawable.entertainment,R.drawable.flower_gifts,R.drawable.sports,R.drawable.health_beauty
       ,R.drawable.home_decor,R.drawable.handicrafts,R.drawable.furniture};
+
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,10 +51,14 @@ public class CategoryFragment extends Fragment {
     }
 
     CardArrayAdapter mCardArrayAdapter = new CardArrayAdapter(getActivity(),cards);
+    AnimationAdapter animCardArrayAdapter;
 
     CardListView listView = (CardListView) getActivity().findViewById(R.id.card_list);
     if (listView!=null){
       listView.setAdapter(mCardArrayAdapter);
+      animCardArrayAdapter = new ScaleInAnimationAdapter(mCardArrayAdapter);
+      animCardArrayAdapter.setAbsListView(listView);
+      listView.setExternalAdapter(animCardArrayAdapter, mCardArrayAdapter);
     }
 
   }
