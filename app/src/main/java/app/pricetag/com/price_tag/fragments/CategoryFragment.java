@@ -6,15 +6,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
-
 import com.pkmmte.view.CircularImageView;
-
 import java.util.ArrayList;
 import app.pricetag.com.price_tag.R;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
-import it.gmariotti.cardslib.library.internal.CardThumbnail;
 import it.gmariotti.cardslib.library.view.CardListView;
 
 /**
@@ -45,9 +43,6 @@ public class CategoryFragment extends Fragment {
     ArrayList<Card> cards = new ArrayList<Card>();
     for (int i=0;i<16;i++){
       CardExample card = new CardExample(getActivity(),i);
-//      CardThumbnail thumbnail = new CardThumbnail(getActivity());
-//      thumbnail.setDrawableResource(imageArr[i]);
-//      card.addCardThumbnail(thumbnail);
       cards.add(card);
     }
 
@@ -64,30 +59,33 @@ public class CategoryFragment extends Fragment {
 
     protected String mTitleMain;
     protected int mImageMain;
-    Context context;
 
     public CardExample(Context context,int position) {
       super(context, R.layout.main_fragment_single_row);
       this.mTitleMain = nameArr[position];
       this.mImageMain = imageArr[position];
-      this.context = context;
-      init();
     }
 
-    private void init(){
 
-      //Add ClickListener
+    @Override
+    public void setupInnerViewElements(ViewGroup parent, View view) {
+
+      //Retrieve elements
+      TextView title = (TextView) parent.findViewById(R.id.card_main_inner_simple_title);
+      CircularImageView circularImageView = (CircularImageView) parent.findViewById(R.id.imageCategory);
+
+      if (title != null)
+        title.setText(mTitleMain);
+
+      if (circularImageView != null)
+        circularImageView.setImageResource(mImageMain);
+
       setOnClickListener(new OnCardClickListener() {
         @Override
         public void onClick(Card card, View view) {
           Toast.makeText(getContext(), "Click Listener card=" + mTitleMain, Toast.LENGTH_SHORT).show();
         }
       });
-
-      //Set the card inner text
-      setTitle(mTitleMain);
     }
-
   }
-
 }
