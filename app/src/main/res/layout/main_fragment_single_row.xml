@@ -8,12 +8,13 @@
 
     <com.pkmmte.view.CircularImageView
         android:id="@+id/imageCategory"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:layout_gravity="center_horizontal"
         android:clickable="false"
         android:layout_marginLeft="10dp"
-        android:src="@drawable/cameras"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/ic_launcher"
         android:scaleType="centerInside"
         app:border="true"
         app:border_color="@color/almost_white_bg"
@@ -23,7 +24,7 @@
     <!-- Use same ID to use built-in features -->
     <TextView
         android:layout_toRightOf="@id/imageCategory"
-        android:id="@+id/card_main_inner_simple_title"
+        android:id="@+id/titleCategory"
         android:layout_marginLeft="10dp"
         android:gravity="center"
         android:layout_width="wrap_content"

@@ -1,6 +1,8 @@
 package app.pricetag.com.price_tag;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -14,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import app.pricetag.com.price_tag.adapters.DrawerDataAdapter;
 import app.pricetag.com.price_tag.fragments.CategoryFragment;
+import app.pricetag.com.price_tag.fragments.SubCategoryListFragment;
 
 public class MyActivity extends Activity {
 
@@ -23,6 +26,7 @@ public class MyActivity extends Activity {
   private CharSequence mDrawerTitle;
   private CharSequence mTitle;
   public static String[] myDrawerListItem;
+  public static int index;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +112,10 @@ public class MyActivity extends Activity {
   private void selectItem(int position) {
     // update the main content by replacing fragments
 
+    index = position;
+    Fragment fragment = new SubCategoryListFragment();
+    FragmentManager fragmentManager = getFragmentManager();
+    fragmentManager.beginTransaction().replace(R.id.content_frame,fragment).commit();
 
 
 

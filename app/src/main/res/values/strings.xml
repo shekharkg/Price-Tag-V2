@@ -6,6 +6,7 @@
     <string name="drawer_close">Close navigation drawer</string>
 
     <string-array name="product_list">
+        <item>Mobiles</item>
         <item>Cameras</item>
         <item>Computers</item>
         <item>Electronics</item>
@@ -22,5 +23,25 @@
         <item>Home Decor</item>
         <item>Handicrafts</item>
         <item>Furniture</item>
+    </string-array>
+
+    <string-array name="category_list">
+        <item>mobiles</item>
+        <item>cameras</item>
+        <item>computers</item>
+        <item>electronics</item>
+        <item>bikes</item>
+        <item>cars</item>
+        <item>books</item>
+        <item>lifestyle</item>
+        <item>babyproducts</item>
+        <item>appliances</item>
+        <item>entertainment</item>
+        <item>flowers-gifts</item>
+        <item>sports</item>
+        <item>health-beauty</item>
+        <item>home-decor</item>
+        <item>handicrafts</item>
+        <item>furniture</item>
     </string-array>
 </resources>

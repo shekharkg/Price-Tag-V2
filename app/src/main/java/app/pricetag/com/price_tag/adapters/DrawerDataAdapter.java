@@ -25,12 +25,12 @@ public class DrawerDataAdapter extends BaseAdapter{
     list = new ArrayList<CategoryDao>();
     Resources res = context.getResources();
     String[] nameArr = res.getStringArray(R.array.product_list);
-    int[] imageArr = {R.drawable.cameras,R.drawable.computers,R.drawable.electronics,R.drawable.bikes
+    int[] imageArr = {R.drawable.mobiles,R.drawable.cameras,R.drawable.computers,R.drawable.electronics,R.drawable.bikes
         ,R.drawable.cars,R.drawable.books,R.drawable.lifestyle,R.drawable.baby_products,R.drawable.appliances
         ,R.drawable.entertainment,R.drawable.flower_gifts,R.drawable.sports,R.drawable.health_beauty
         ,R.drawable.home_decor,R.drawable.handicrafts,R.drawable.furniture};
 
-    for(int i=0; i<16; i++){
+    for(int i=0; i<17; i++){
       list.add(new CategoryDao(nameArr[i], imageArr[i]));
     }
   }
