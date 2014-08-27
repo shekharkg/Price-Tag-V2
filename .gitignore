@@ -28,3 +28,6 @@ proguard/
 
 # log files
 *.log
+
+#url xml file
+url.xml
