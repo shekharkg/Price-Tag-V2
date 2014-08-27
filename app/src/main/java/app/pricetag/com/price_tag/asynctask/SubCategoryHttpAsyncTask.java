@@ -4,18 +4,18 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-
-import app.pricetag.com.price_tag.MyActivity;
+import app.pricetag.com.price_tag.dao.SubCategoryDao;
 
 /**
  * Created by shekhar on 26/8/14.
  */
-public class HttpAsyncTask extends AsyncTask<String, Void, String> {
+public class SubCategoryHttpAsyncTask extends AsyncTask<String, Void, String> {
 
   Dialog dialog;
   Context context;
+  SubCategoryDao subCategoryDao;
 
-  public HttpAsyncTask(Context context) {
+  public SubCategoryHttpAsyncTask(Context context) {
     this.context = context;
   }
 
@@ -35,8 +35,8 @@ public class HttpAsyncTask extends AsyncTask<String, Void, String> {
 
   @Override
   protected void onPostExecute(String result) {
-
-    dialog.setTitle(result);
+    new SubCategoryDao(result, context);
+    dialog.dismiss();
   }
 
 }

@@ -1,5 +1,6 @@
 package app.pricetag.com.price_tag.fragments;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
@@ -10,12 +11,13 @@ import android.widget.Toast;
 
 import app.pricetag.com.price_tag.MyActivity;
 import app.pricetag.com.price_tag.R;
-import app.pricetag.com.price_tag.asynctask.HttpAsyncTask;
+import app.pricetag.com.price_tag.asynctask.SubCategoryHttpAsyncTask;
 
 /**
  * Created by shekhar on 26/8/14.
  */
 public class SubCategoryListFragment extends Fragment {
+  public static  Activity c;
   String categoryUrl;
   String[] categoryIndex;
   Context context;
@@ -33,6 +35,7 @@ public class SubCategoryListFragment extends Fragment {
     super.onActivityCreated(savedInstanceState);
     categoryUrl = categoryUrl + categoryIndex[MyActivity.index];
     Toast.makeText(context,categoryUrl,Toast.LENGTH_SHORT).show();
-    new HttpAsyncTask(context).execute(categoryUrl);
+    new SubCategoryHttpAsyncTask(context).execute(categoryUrl);
+    c = getActivity();
   }
 }
