@@ -3,6 +3,7 @@ package app.pricetag.com.price_tag.dao;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import app.pricetag.com.price_tag.MyActivity;
+import app.pricetag.com.price_tag.ProductListDetailActivity;
 import app.pricetag.com.price_tag.R;
 import app.pricetag.com.price_tag.fragments.SubCategoryListFragment;
 import it.gmariotti.cardslib.library.internal.Card;
@@ -93,6 +95,9 @@ public class SubCategoryDao {
       setOnClickListener(new OnCardClickListener() {
         @Override
         public void onClick(Card card, View view) {
+          Intent intent = new Intent(SubCategoryListFragment.c,ProductListDetailActivity.class);
+          intent.putExtra("subCategoryId", subCategoryProductId);
+          getContext().startActivity(intent);
           Toast.makeText(context,"subCategoryProductId is : " + subCategoryProductId,Toast.LENGTH_SHORT).show();
         }
       });
