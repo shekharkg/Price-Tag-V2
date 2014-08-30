@@ -1,5 +1,6 @@
 package app.pricetag.com.price_tag.fragments;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
@@ -25,11 +26,22 @@ import it.gmariotti.cardslib.library.view.CardListView;
  */
 public class CategoryFragment extends Fragment {
   String[] nameArr;
+  ArrayList<Card> cards = new ArrayList<Card>();
+
   int[] imageArr = {R.drawable.mobiles,R.drawable.cameras,R.drawable.computers,R.drawable.electronics,R.drawable.bikes
       ,R.drawable.cars,R.drawable.books,R.drawable.lifestyle,R.drawable.baby_products,R.drawable.appliances
       ,R.drawable.entertainment,R.drawable.flower_gifts,R.drawable.sports,R.drawable.health_beauty
       ,R.drawable.home_decor,R.drawable.handicrafts,R.drawable.furniture};
 
+
+  @Override
+  public void onAttach(Activity activity) {
+    super.onAttach(activity);
+  }
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+  }
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -46,7 +58,7 @@ public class CategoryFragment extends Fragment {
 
   private void initCards() {
 
-    ArrayList<Card> cards = new ArrayList<Card>();
+
     for (int i=0;i<17;i++){
       CardExample card = new CardExample(getActivity(),i);
       cards.add(card);
