@@ -1,8 +1,4 @@
 package app.pricetag.com.price_tag.asynctask;
-
-import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.os.AsyncTask;
 import app.pricetag.com.price_tag.fragments.ProductListFragment;
 

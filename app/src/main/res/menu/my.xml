@@ -1,9 +1,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".MyActivity" >
-    <item android:id="@+id/action_settings"
-        android:title="Search"
-        android:icon="@drawable/ic_action_action_search"
-        android:orderInCategory="100"
-        android:showAsAction="always" />
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="app.pricetag.com.price_tag.MyActivity" >
+
+    <item android:id="@+id/action_search"
+          android:title="Search"
+          android:showAsAction="always"
+          android:icon="@drawable/ic_action_action_search"/>
 </menu>

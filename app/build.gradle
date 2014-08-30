@@ -25,4 +25,5 @@ dependencies {
     compile 'com.pkmmte.view:circularimageview:1.1'
     compile 'com.github.gabrielemariotti.cards:library-extra:1.8.0'
     compile 'com.koushikdutta.ion:ion:1.2.4'
+    compile 'com.oguzdev:CircularFloatingActionMenu:1.0.2'
 }

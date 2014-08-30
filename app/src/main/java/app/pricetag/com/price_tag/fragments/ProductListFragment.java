@@ -1,5 +1,6 @@
 package app.pricetag.com.price_tag.fragments;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
@@ -16,6 +17,9 @@ import android.widget.Toast;
 import com.koushikdutta.ion.Ion;
 import com.nhaarman.listviewanimations.swinginadapters.AnimationAdapter;
 import com.nhaarman.listviewanimations.swinginadapters.prepared.ScaleInAnimationAdapter;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
+import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,10 +41,12 @@ import it.gmariotti.cardslib.library.view.listener.SwipeOnScrollListener;
 public class ProductListFragment extends Fragment {
   static Context context;
   static int start;
+  public static int totalProductCount;
   public static ArrayList<Card> cards;
   static CardListView listView;
   static CardArrayAdapter mCardArrayAdapter;
   static AnimationAdapter animCardArrayAdapter;
+  static Activity activity;
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,8 +58,8 @@ public class ProductListFragment extends Fragment {
   @Override
   public void onActivityCreated(Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
+    activity = getActivity();
 
-    Toast.makeText(context, ProductListDetailActivity.productListUrl, Toast.LENGTH_SHORT).show();
     cards  = new ArrayList<Card>();
     mCardArrayAdapter = new CardArrayAdapter(context,cards);
     animCardArrayAdapter = new ScaleInAnimationAdapter(mCardArrayAdapter);
@@ -91,14 +97,44 @@ public class ProductListFragment extends Fragment {
             }
           }
         });
+  }
 
+  static void sortmenu(){
+    ImageView fabIconNew = new ImageView(activity);
+    fabIconNew.setImageDrawable(activity.getResources().getDrawable(R.drawable.ic_action_collections_sort_by_size));
+    FloatingActionButton rightLowerButton = new FloatingActionButton.Builder(activity)
+        .setContentView(fabIconNew)
+        .setBackgroundDrawable(R.drawable.sort_button)
+        .build();
 
+    SubActionButton.Builder rLSubBuilder = new SubActionButton.Builder(activity);
+    rLSubBuilder.setBackgroundDrawable(activity.getResources().getDrawable(R.drawable.sort_button));
+    ImageView rlIcon1 = new ImageView(activity);
+    ImageView rlIcon2 = new ImageView(activity);
+    ImageView rlIcon3 = new ImageView(activity);
+    ImageView rlIcon4 = new ImageView(activity);
+
+    rlIcon1.setImageDrawable(activity.getResources().getDrawable(R.drawable.ic_ab_back_mtrl_am_alpha));
+    rlIcon2.setImageDrawable(activity.getResources().getDrawable(R.drawable.ic_action_action_search));
+    rlIcon3.setImageDrawable(activity.getResources().getDrawable(R.drawable.rate_star_small_off_holo_dark));
+    rlIcon4.setImageDrawable(activity.getResources().getDrawable(R.drawable.ic_action_collections_sort_by_size));
+
+    // Build the menu with default options: light theme, 90 degrees, 72dp radius.
+    // Set 4 default SubActionButtons
+    FloatingActionMenu rightLowerMenu = new FloatingActionMenu.Builder(activity)
+        .addSubActionView(rLSubBuilder.setContentView(rlIcon1).build())
+        .addSubActionView(rLSubBuilder.setContentView(rlIcon2).build())
+        .addSubActionView(rLSubBuilder.setContentView(rlIcon3).build())
+        .addSubActionView(rLSubBuilder.setContentView(rlIcon4).build())
+        .attachTo(rightLowerButton)
+        .build();
   }
 
 
   public static void productListDao(String jsonString) {
     if(start == 25){
       cards.remove(0);
+      sortmenu();
     }
     else{
       cards.remove(start-25);
@@ -109,6 +145,7 @@ public class ProductListFragment extends Fragment {
       try {
         jsonObject = new JSONObject(jsonString);
         JSONArray jsonArray = jsonObject.getJSONArray("products");
+        ProductListFragment.totalProductCount = Integer.parseInt(jsonObject.getString("product_count"));
         for(int i=0; i<jsonArray.length(); i++) {
           JSONObject productObject = jsonArray.getJSONObject(i);
 
@@ -181,6 +218,7 @@ public class ProductListFragment extends Fragment {
           price.setText("Rs. " + productPrice);
           saveupto.setText("Save upto : Rs. " + saveUpTO);
           if(saveUpTO == 0){
+            saveupto.setVisibility(View.INVISIBLE);
           }
         }
 

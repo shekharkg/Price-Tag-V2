@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.nhaarman.listviewanimations.swinginadapters.AnimationAdapter;
 import com.nhaarman.listviewanimations.swinginadapters.prepared.ScaleInAnimationAdapter;
@@ -51,7 +50,6 @@ public class SubCategoryListFragment extends Fragment {
   public void onActivityCreated(Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
     categoryUrl = categoryUrl + categoryIndex[MyActivity.index];
-    Toast.makeText(context,categoryUrl,Toast.LENGTH_SHORT).show();
 
     listView = (CardListView) getActivity().findViewById(R.id.card_list);
     cards  = new ArrayList<Card>();
@@ -127,7 +125,6 @@ public class SubCategoryListFragment extends Fragment {
             intent.putExtra("subCategoryId", subCategoryProductId);
             intent.putExtra("title", subCategoryListName);
             getContext().startActivity(intent);
-            Toast.makeText(context,"subCategoryProductId is : " + subCategoryProductId,Toast.LENGTH_SHORT).show();
           }
         });
       }
