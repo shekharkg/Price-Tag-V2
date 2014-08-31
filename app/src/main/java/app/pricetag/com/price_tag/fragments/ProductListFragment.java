@@ -86,6 +86,7 @@ public class ProductListFragment extends Fragment {
               if(start==0){
                 Card card = new Card(getActivity());
                 card.setInnerLayout(R.layout.loading_view_starting);
+                card.setShadow(false);
                 mCardArrayAdapter.add(card);
               }
               else{

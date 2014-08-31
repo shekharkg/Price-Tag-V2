@@ -27,6 +27,7 @@ public class MyActivity extends Activity {
   private CharSequence mTitle;
   public static String[] myDrawerListItem;
   public static int index;
+  public static int fragmentCount;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -72,12 +73,24 @@ public class MyActivity extends Activity {
 
     //Define and set Fragment to container
     getFragmentManager().beginTransaction().add(R.id.content_frame,new CategoryFragment()).commit();
-
+    fragmentCount = 0;
+    getActionBar().setIcon(R.drawable.ic_launcher);
     if (savedInstanceState == null) {
       //do action on startup
     }
 
   }
+
+  @Override
+  public void onBackPressed() {
+    if (fragmentCount == 1) {
+      getFragmentManager().beginTransaction().replace(R.id.content_frame,new CategoryFragment()).commit();
+      fragmentCount = 0;
+    } else {
+      super.onBackPressed();
+    }
+  }
+
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
@@ -116,6 +129,7 @@ public class MyActivity extends Activity {
     Fragment fragment = new SubCategoryListFragment();
     FragmentManager fragmentManager = getFragmentManager();
     fragmentManager.beginTransaction().replace(R.id.content_frame,fragment).commit();
+    fragmentCount =1;
 
 
 
@@ -147,7 +161,7 @@ public class MyActivity extends Activity {
   @Override
   public void onConfigurationChanged(Configuration newConfig) {
     super.onConfigurationChanged(newConfig);
-    // Pass any configuration change to the drawer toggls
+    // Pass any configuration change to the drawer toggles
     mDrawerToggle.onConfigurationChanged(newConfig);
   }
 

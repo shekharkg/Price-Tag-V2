@@ -111,6 +111,7 @@ public class CategoryFragment extends Fragment {
           Fragment fragment = new SubCategoryListFragment();
           FragmentManager fragmentManager = getFragmentManager();
           fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+          MyActivity.fragmentCount =1;
         }
       });
     }

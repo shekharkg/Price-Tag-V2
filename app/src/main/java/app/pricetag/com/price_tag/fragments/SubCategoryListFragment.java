@@ -56,6 +56,7 @@ public class SubCategoryListFragment extends Fragment {
     mCardArrayAdapter = new CardArrayAdapter(context, cards);
     Card card = new Card(getActivity());
     card.setInnerLayout(R.layout.loading_view_starting);
+    card.setShadow(false);
     mCardArrayAdapter.add(card);
     listView.setAdapter(mCardArrayAdapter);
 
