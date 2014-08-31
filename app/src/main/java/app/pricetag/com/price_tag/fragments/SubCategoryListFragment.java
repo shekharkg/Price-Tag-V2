@@ -77,7 +77,6 @@ public class SubCategoryListFragment extends Fragment {
           int subCategoryProductId = Integer.parseInt(productObject.getString("id_category"));
           SubCategoryList card = new SubCategoryList(subCategoryListName,subCategoryProductCount,subCategoryProductId);
           cards.add(card);
-          Log.e("skg", subCategoryListName + "-----" + subCategoryProductId + "-----" + subCategoryProductCount);
         }
         AnimationAdapter animCardArrayAdapter;
 

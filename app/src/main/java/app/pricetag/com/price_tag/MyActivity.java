@@ -14,6 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import app.pricetag.com.price_tag.adapters.DrawerDataAdapter;
 import app.pricetag.com.price_tag.fragments.CategoryFragment;
 import app.pricetag.com.price_tag.fragments.SubCategoryListFragment;
@@ -111,7 +113,12 @@ public class MyActivity extends Activity {
     if (mDrawerToggle.onOptionsItemSelected(item)) {
       return true;
     }
-      return super.onOptionsItemSelected(item);
+    switch (item.getItemId()) {
+      case R.id.action_search:
+        Toast.makeText(this, "Search touched", Toast.LENGTH_SHORT).show();
+        return(true);
+    }
+    return super.onOptionsItemSelected(item);
   }
 
   /* The click listner for ListView in the navigation drawer */

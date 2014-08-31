@@ -66,6 +66,7 @@ public class ProductListFragment extends Fragment {
     listView = (CardListView) getActivity().findViewById(R.id.card_list);
     listView.setAdapter(mCardArrayAdapter);
     animCardArrayAdapter.setAbsListView(listView);
+    listView.setExternalAdapter(animCardArrayAdapter, mCardArrayAdapter);
 
 
 
@@ -107,28 +108,13 @@ public class ProductListFragment extends Fragment {
         .setContentView(fabIconNew)
         .setBackgroundDrawable(R.drawable.sort_button)
         .build();
-
     SubActionButton.Builder rLSubBuilder = new SubActionButton.Builder(activity);
     rLSubBuilder.setBackgroundDrawable(activity.getResources().getDrawable(R.drawable.sort_button));
-    ImageView rlIcon1 = new ImageView(activity);
-    ImageView rlIcon2 = new ImageView(activity);
-    ImageView rlIcon3 = new ImageView(activity);
-    ImageView rlIcon4 = new ImageView(activity);
-
-    rlIcon1.setImageDrawable(activity.getResources().getDrawable(R.drawable.ic_ab_back_mtrl_am_alpha));
-    rlIcon2.setImageDrawable(activity.getResources().getDrawable(R.drawable.ic_action_action_search));
-    rlIcon3.setImageDrawable(activity.getResources().getDrawable(R.drawable.rate_star_small_off_holo_dark));
-    rlIcon4.setImageDrawable(activity.getResources().getDrawable(R.drawable.ic_action_collections_sort_by_size));
-
-    // Build the menu with default options: light theme, 90 degrees, 72dp radius.
-    // Set 4 default SubActionButtons
-    FloatingActionMenu rightLowerMenu = new FloatingActionMenu.Builder(activity)
-        .addSubActionView(rLSubBuilder.setContentView(rlIcon1).build())
-        .addSubActionView(rLSubBuilder.setContentView(rlIcon2).build())
-        .addSubActionView(rLSubBuilder.setContentView(rlIcon3).build())
-        .addSubActionView(rLSubBuilder.setContentView(rlIcon4).build())
-        .attachTo(rightLowerButton)
-        .build();
+    fabIconNew.setOnClickListener(new View.OnClickListener() {
+      public void onClick(View v) {
+        Toast.makeText(context, "Floating Action Button", Toast.LENGTH_SHORT).show();
+      }
+    });
   }
 
 
@@ -164,8 +150,6 @@ public class ProductListFragment extends Fragment {
           mCardArrayAdapter.setNotifyOnChange(true);
           mCardArrayAdapter.notifyDataSetChanged();
 
-          //Log.e("SKG","ID: " + productId + " NAME: " + productName + " PRICE: " + productPrice + " SAVE: "
-          //+ saveUpTO + " IMAGE: " + productImage + " RATING: " + productRating + " SUPPLIER: " + productSupplierCount);
         }
 
       } catch (JSONException e) {

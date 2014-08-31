@@ -2,6 +2,7 @@
 
     <style name="MaterialActionBarTheme" parent="@android:style/Theme.Holo.Light.DarkActionBar">
         <item name="android:actionBarStyle">@style/MyActionBar</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_ab_back_mtrl_am_alpha</item>
     </style>
 
     <!-- ActionBar styles -->

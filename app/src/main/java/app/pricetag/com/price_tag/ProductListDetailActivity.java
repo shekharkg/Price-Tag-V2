@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import app.pricetag.com.price_tag.fragments.ProductListFragment;
 
@@ -31,7 +32,7 @@ public class ProductListDetailActivity extends Activity {
     productListUrl = getResources().getString(R.string.productListUrl) + subCategoryId;
     getFragmentManager().beginTransaction().add(R.id.content_frame_product_list, new ProductListFragment()).commit();
     actionBar = getActionBar();
-    actionBar.setIcon(R.drawable.ic_ab_back_mtrl_am_alpha);
+    actionBar.setDisplayHomeAsUpEnabled(true);
     setTitleColor(getResources().getColor(R.color.almost_white_bg));
 
 
@@ -56,6 +57,7 @@ public class ProductListDetailActivity extends Activity {
 
     switch (item.getItemId()) {
       case R.id.action_search:
+        Toast.makeText(this, "Search touched", Toast.LENGTH_SHORT).show();
         return(true);
 
       case android.R.id.home:
