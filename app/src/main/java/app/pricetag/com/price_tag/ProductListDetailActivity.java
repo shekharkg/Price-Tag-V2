@@ -15,9 +15,10 @@ import app.pricetag.com.price_tag.fragments.ProductListFragment;
  * Created by shekhar on 28/8/14.
  */
 public class ProductListDetailActivity extends Activity {
-  int subCategoryId;
+  public static int subCategoryId;
   public static String productListUrl;
   ActionBar actionBar;
+  public static String sortOrder;
 
   @Override
   protected void onCreate(Bundle savedInstanceState){
@@ -29,6 +30,7 @@ public class ProductListDetailActivity extends Activity {
       subCategoryId = intent.getIntExtra("subCategoryId", 1);
       setTitle(intent.getStringExtra("title"));
     }
+    sortOrder = "&order_by=popular&limit=25&start=";
     productListUrl = getResources().getString(R.string.productListUrl) + subCategoryId;
     getFragmentManager().beginTransaction().add(R.id.content_frame_product_list, new ProductListFragment()).commit();
     actionBar = getActionBar();

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <it.gmariotti.cardslib.library.view.CardView
+        android:id="@+id/carddemo_card_crouton_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        card:card_layout_resourceID="@layout/carddemo_extras_card_crouton_layout"
+        android:layout_marginTop="12dp"/>
+
+</LinearLayout>

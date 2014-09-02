@@ -26,7 +26,7 @@ public class MyActivity extends Activity {
   private ListView mDrawerList;
   private ActionBarDrawerToggle mDrawerToggle;
   private CharSequence mDrawerTitle;
-  private CharSequence mTitle;
+  public static CharSequence mTitle;
   public static String[] myDrawerListItem;
   public static int index;
   public static int fragmentCount;
@@ -88,6 +88,8 @@ public class MyActivity extends Activity {
     if (fragmentCount == 1) {
       getFragmentManager().beginTransaction().replace(R.id.content_frame,new CategoryFragment()).commit();
       fragmentCount = 0;
+
+      setTitle(getResources().getString(R.string.app_name));
     } else {
       super.onBackPressed();
     }

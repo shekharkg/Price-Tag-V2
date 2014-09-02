@@ -26,4 +26,9 @@ dependencies {
     compile 'com.github.gabrielemariotti.cards:library-extra:1.8.0'
     compile 'com.koushikdutta.ion:ion:1.2.4'
     compile 'com.oguzdev:CircularFloatingActionMenu:1.0.2'
+    compile('de.keyboardsurfer.android.widget:crouton:1.8.4@aar') {
+        // exclusion is not neccessary, but generally a good idea.
+        exclude group: 'com.google.android', module: 'support-v4'
+    }
+
 }
