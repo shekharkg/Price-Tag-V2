@@ -6,6 +6,11 @@ import app.pricetag.com.price_tag.fragments.ProductListFragment;
  * Created by shekhar on 28/8/14.
  */
 public class ProductListHttpAsyncTask extends AsyncTask<String, Void, String> {
+  ProductListFragment fragment;
+
+  public ProductListHttpAsyncTask(ProductListFragment fragment) {
+    this.fragment = fragment;
+  }
 
   @Override
   protected String doInBackground(String... params) {
@@ -15,7 +20,7 @@ public class ProductListHttpAsyncTask extends AsyncTask<String, Void, String> {
   @Override
   protected void onPostExecute(String result) {
     //if result is null then implement action
-    ProductListFragment.productListDao(result);
+    fragment.productListDao(result);
   }
 
 }

@@ -3,7 +3,10 @@ package app.pricetag.com.price_tag;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
@@ -17,8 +20,10 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import app.pricetag.com.price_tag.adapters.DrawerDataAdapter;
+import app.pricetag.com.price_tag.dao.ConnectedToInternetOrNot;
 import app.pricetag.com.price_tag.fragments.CategoryFragment;
 import app.pricetag.com.price_tag.fragments.SubCategoryListFragment;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 public class MyActivity extends Activity {
 
@@ -30,17 +35,19 @@ public class MyActivity extends Activity {
   public static String[] myDrawerListItem;
   public static int index;
   public static int fragmentCount;
+  ConnectedToInternetOrNot connectedToInternetOrNot;
+  int connected;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_my);
-
     myDrawerListItem = getResources().getStringArray(R.array.product_list);
     mTitle = mDrawerTitle = getTitle();
     mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
     mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
+    connectedToInternetOrNot = new ConnectedToInternetOrNot();
     // set a custom shadow that overlays the main content when the drawer opens
     mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
     // set up the drawer's list view with items and click listener
@@ -85,6 +92,7 @@ public class MyActivity extends Activity {
 
   @Override
   public void onBackPressed() {
+    Crouton.cancelAllCroutons();
     if (fragmentCount == 1) {
       getFragmentManager().beginTransaction().replace(R.id.content_frame,new CategoryFragment()).commit();
       fragmentCount = 0;
@@ -132,20 +140,18 @@ public class MyActivity extends Activity {
   }
 
   private void selectItem(int position) {
-    // update the main content by replacing fragments
-
-    index = position;
-    Fragment fragment = new SubCategoryListFragment();
-    FragmentManager fragmentManager = getFragmentManager();
-    fragmentManager.beginTransaction().replace(R.id.content_frame,fragment).commit();
-    fragmentCount =1;
-
-
-
-    // update selected item and title, then close the drawer
-    mDrawerList.setItemChecked(position, true);
-
-    setTitle(myDrawerListItem[position]);
+    connected = connectedToInternetOrNot.ConnectedToInternetOrNot(this);
+    if(connected==1){
+      // update the main content by replacing fragments
+      index = position;
+      Fragment fragment = new SubCategoryListFragment();
+      FragmentManager fragmentManager = getFragmentManager();
+      fragmentManager.beginTransaction().replace(R.id.content_frame,fragment).commit();
+      fragmentCount =1;
+      // update selected item and title, then close the drawer
+      mDrawerList.setItemChecked(position, true);
+      setTitle(myDrawerListItem[position]);
+    }
     mDrawerLayout.closeDrawer(mDrawerList);
   }
 

@@ -17,6 +17,8 @@ import java.util.ArrayList;
 
 import app.pricetag.com.price_tag.MyActivity;
 import app.pricetag.com.price_tag.R;
+import app.pricetag.com.price_tag.dao.ConnectedToInternetOrNot;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
 import it.gmariotti.cardslib.library.view.CardListView;
@@ -27,6 +29,8 @@ import it.gmariotti.cardslib.library.view.CardListView;
 public class CategoryFragment extends Fragment {
   String[] nameArr;
   ArrayList<Card> cards = new ArrayList<Card>();
+  ConnectedToInternetOrNot connectedToInternetOrNot;
+  int connected;
 
   int[] imageArr = {R.drawable.mobiles,R.drawable.cameras,R.drawable.computers,R.drawable.electronics,R.drawable.bikes
       ,R.drawable.cars,R.drawable.books,R.drawable.lifestyle,R.drawable.baby_products,R.drawable.appliances
@@ -46,6 +50,7 @@ public class CategoryFragment extends Fragment {
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     nameArr = container.getResources().getStringArray(R.array.product_list);
+    connectedToInternetOrNot = new ConnectedToInternetOrNot();
     return inflater.inflate(R.layout.main_fragment_list_cointainer, container, false);
   }
 
@@ -106,13 +111,17 @@ public class CategoryFragment extends Fragment {
       setOnClickListener(new OnCardClickListener() {
         @Override
         public void onClick(Card card, View view) {
-          ((MyActivity) getActivity()).getActionBar().setTitle(mTitleMain);
-          MyActivity.index = selectedCategoryIndex;
-          Fragment fragment = new SubCategoryListFragment();
-          FragmentManager fragmentManager = getFragmentManager();
-          fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-          MyActivity.mTitle = mTitleMain;
-          MyActivity.fragmentCount =1;
+          connected = connectedToInternetOrNot.ConnectedToInternetOrNot((MyActivity) getActivity());
+          if(connected == 1){
+            ((MyActivity) getActivity()).getActionBar().setTitle(mTitleMain);
+            MyActivity.index = selectedCategoryIndex;
+            Fragment fragment = new SubCategoryListFragment();
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+            MyActivity.mTitle = mTitleMain;
+            MyActivity.fragmentCount =1;
+            Crouton.cancelAllCroutons();
+          }
         }
       });
     }

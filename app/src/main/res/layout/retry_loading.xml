@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_height="fill_parent"
+              android:layout_width="fill_parent"
+              android:background="#FFFFFF"
+              android:gravity="center"
+              android:padding="12dp"
+              android:baselineAligned="true">
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:text="Something went wrong.\n \t \t \t \t Tap to retry."
+        android:textColor="@color/material_teal"/>
+</LinearLayout> 

@@ -1,6 +1,7 @@
 package app.pricetag.com.price_tag.fragments;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,6 +24,8 @@ import app.pricetag.com.price_tag.MyActivity;
 import app.pricetag.com.price_tag.ProductListDetailActivity;
 import app.pricetag.com.price_tag.R;
 import app.pricetag.com.price_tag.asynctask.SubCategoryHttpAsyncTask;
+import app.pricetag.com.price_tag.dao.ConnectedToInternetOrNot;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
 import it.gmariotti.cardslib.library.view.CardListView;
@@ -33,10 +36,12 @@ import it.gmariotti.cardslib.library.view.CardListView;
 public class SubCategoryListFragment extends Fragment {
   String categoryUrl;
   String[] categoryIndex;
-  static Context context;
-  static CardListView listView;
-  static CardArrayAdapter mCardArrayAdapter;
-  static ArrayList<Card> cards;
+  Context context;
+  CardListView listView;
+  CardArrayAdapter mCardArrayAdapter;
+  ArrayList<Card> cards;
+  ConnectedToInternetOrNot connectedToInternetOrNot;
+  int connected;
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -59,11 +64,11 @@ public class SubCategoryListFragment extends Fragment {
     card.setShadow(false);
     mCardArrayAdapter.add(card);
     listView.setAdapter(mCardArrayAdapter);
-
-    new SubCategoryHttpAsyncTask().execute(categoryUrl);
+    connectedToInternetOrNot = new ConnectedToInternetOrNot();
+    new SubCategoryHttpAsyncTask(this).execute(categoryUrl);
   }
 
-  public static void subCategoryDao(String jsonString) {
+  public void subCategoryDao(String jsonString) {
     cards.remove(0);
 
       try {
@@ -79,8 +84,6 @@ public class SubCategoryListFragment extends Fragment {
           cards.add(card);
         }
         AnimationAdapter animCardArrayAdapter;
-
-
         if (listView!=null){
           listView.setAdapter(mCardArrayAdapter);
           animCardArrayAdapter = new ScaleInAnimationAdapter(mCardArrayAdapter);
@@ -89,13 +92,31 @@ public class SubCategoryListFragment extends Fragment {
         }
 
       } catch (JSONException e) {
+        Card card = new Card((MyActivity) getActivity());
+        card.setInnerLayout(R.layout.retry_loading);
+        card.setOnClickListener(new Card.OnCardClickListener() {
+          @Override
+          public void onClick(Card card, View view) {
+            connected = connectedToInternetOrNot.ConnectedToInternetOrNot((MyActivity) getActivity());
+            if(connected == 1) {
+              Fragment fragment = new SubCategoryListFragment();
+              FragmentManager fragmentManager = getFragmentManager();
+              fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+              Crouton.cancelAllCroutons();
+            }
+          }
+        });
+        cards.add(card);
+        if (listView!=null) {
+          listView.setAdapter(mCardArrayAdapter);
+        }
         e.printStackTrace();
       }
 
 
     }
 
-    public static class SubCategoryList extends Card{
+    public class SubCategoryList extends Card{
 
       String subCategoryListName;
       int subCategoryProductCount;
@@ -121,10 +142,14 @@ public class SubCategoryListFragment extends Fragment {
         setOnClickListener(new OnCardClickListener() {
           @Override
           public void onClick(Card card, View view) {
-            Intent intent = new Intent(context,ProductListDetailActivity.class);
-            intent.putExtra("subCategoryId", subCategoryProductId);
-            intent.putExtra("title", subCategoryListName);
-            getContext().startActivity(intent);
+            connected = connectedToInternetOrNot.ConnectedToInternetOrNot((MyActivity) getActivity());
+            if(connected == 1){
+              Intent intent = new Intent(context,ProductListDetailActivity.class);
+              intent.putExtra("subCategoryId", subCategoryProductId);
+              intent.putExtra("title", subCategoryListName);
+              Crouton.cancelAllCroutons();
+              getContext().startActivity(intent);
+            }
           }
         });
       }

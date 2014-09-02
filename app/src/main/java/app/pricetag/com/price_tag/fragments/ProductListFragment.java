@@ -3,6 +3,7 @@ package app.pricetag.com.price_tag.fragments;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,9 +32,11 @@ import org.json.JSONObject;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
+import app.pricetag.com.price_tag.MyActivity;
 import app.pricetag.com.price_tag.ProductListDetailActivity;
 import app.pricetag.com.price_tag.R;
 import app.pricetag.com.price_tag.asynctask.ProductListHttpAsyncTask;
+import app.pricetag.com.price_tag.dao.ConnectedToInternetOrNot;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
@@ -46,14 +49,16 @@ import it.gmariotti.cardslib.library.view.listener.SwipeOnScrollListener;
  * Created by shekhar on 28/8/14.
  */
 public class ProductListFragment extends Fragment {
-  static Context context;
-  static int start;
-  public static int totalProductCount;
-  public static ArrayList<Card> cards;
-  static CardListView listView;
-  static CardArrayAdapter mCardArrayAdapter;
-  static AnimationAdapter animCardArrayAdapter;
-  static Activity activity;
+  Context context;
+  public int start;
+  public int totalProductCount;
+  public ArrayList<Card> cards;
+  CardListView listView;
+  CardArrayAdapter mCardArrayAdapter;
+  AnimationAdapter animCardArrayAdapter;
+  Activity activity;
+  ConnectedToInternetOrNot connectedToInternetOrNot;
+  int connected;
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -72,41 +77,13 @@ public class ProductListFragment extends Fragment {
     animCardArrayAdapter = new ScaleInAnimationAdapter(mCardArrayAdapter);
     listView = (CardListView) getActivity().findViewById(R.id.card_list);
     listView.setAdapter(mCardArrayAdapter);
-
-    listView.setOnScrollListener(
-        new SwipeOnScrollListener() {
-          @Override
-          public void onScrollStateChanged(AbsListView view, int scrollState) {
-            super.onScrollStateChanged(view,scrollState);
-          }
-
-          @Override
-          public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-            //what is the bottom iten that is visible
-            int lastInScreen = firstVisibleItem + visibleItemCount;
-            if(lastInScreen == start){
-              new ProductListHttpAsyncTask().execute(ProductListDetailActivity.productListUrl + ProductListDetailActivity.sortOrder + start);
-              if(start==0){
-                Card card = new Card(getActivity());
-                card.setInnerLayout(R.layout.loading_view_starting);
-                card.setShadow(false);
-                mCardArrayAdapter.add(card);
-              }
-              else{
-                Card card = new Card(getActivity());
-                card.setInnerLayout(R.layout.loading_view_card);
-                mCardArrayAdapter.add(card);
-              }
-              start += 25;
-            }
-          }
-        });
-
+    listView.setOnScrollListener(new PLFScrollListerner(this));
+    connectedToInternetOrNot = new ConnectedToInternetOrNot();
   }
 
 
 
-  static void sortmenu(){
+  public void sortmenu(){
     final ImageView fabIconNew = new ImageView(activity);
     fabIconNew.setImageDrawable(activity.getResources().getDrawable(R.drawable.ic_action_collections_sort_by_size));
     final FloatingActionButton rightLowerButton = new FloatingActionButton.Builder(activity)
@@ -135,47 +112,20 @@ public class ProductListFragment extends Fragment {
         listViewDialog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
           @Override
           public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            ProductListDetailActivity.sortOrder = "&" + sortOrderName[position] + "&limit=25&start=";
+            connected = connectedToInternetOrNot.ConnectedToInternetOrNot(activity);
+            if (connected == 1) {
+              ProductListDetailActivity.sortOrder = "&" + sortOrderName[position] + "&limit=25&start=";
+              activity.getFragmentManager().beginTransaction().replace(R.id.content_frame_product_list, new ProductListFragment()).commit();
+              rightLowerButton.detach();
+            }
             dialog.dismiss();
-            activity.getFragmentManager().beginTransaction().replace(R.id.content_frame_product_list, new ProductListFragment()).commit();
-            rightLowerButton.detach();
-            Toast.makeText(activity,sortOrderName[position], Toast.LENGTH_SHORT).show();
           }
         });
-        //crouton();
       }
     });
   }
 
-  private static void crouton() {
-
-    LayoutInflater mInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    View view = mInflater.inflate(R.layout.carddemo_extras_crouton_card, null);
-
-    //CardView
-    CardView cardView = (CardView) view.findViewById(R.id.carddemo_card_crouton_id);
-
-    //Card
-    Card card = new Card(activity);
-    card.setTitle("Crouton Card");
-    card.setBackgroundResourceId(R.color.red_error_bg);
-
-    //Add a cardThumbnail
-    CardThumbnail thumb = new CardThumbnail(activity);
-    thumb.setDrawableResource(R.drawable.ic_launcher);
-    card.addCardThumbnail(thumb);
-
-    cardView.setCard(card);
-
-    //Make the crouton view
-    final Crouton crouton;
-    crouton = Crouton.make(activity, view);
-    crouton.show();
-
-  }
-
-
-  public static void productListDao(String jsonString) {
+  public void productListDao(String jsonString) {
     if(start == 25){
       try{
         cards.remove(0);
@@ -195,7 +145,7 @@ public class ProductListFragment extends Fragment {
       try {
         jsonObject = new JSONObject(jsonString);
         JSONArray jsonArray = jsonObject.getJSONArray("products");
-        ProductListFragment.totalProductCount = Integer.parseInt(jsonObject.getString("product_count"));
+        totalProductCount = Integer.parseInt(jsonObject.getString("product_count"));
         for(int i=0; i<jsonArray.length(); i++) {
           JSONObject productObject = jsonArray.getJSONObject(i);
 
@@ -218,11 +168,26 @@ public class ProductListFragment extends Fragment {
         }
 
       } catch (JSONException e) {
+        Card card = new Card(activity);
+        card.setInnerLayout(R.layout.retry_loading);
+        card.setOnClickListener(new Card.OnCardClickListener() {
+          @Override
+          public void onClick(Card card, View view) {
+            connected = connectedToInternetOrNot.ConnectedToInternetOrNot(activity);
+            if (connected == 1) {
+              Fragment fragment = new ProductListFragment();
+              FragmentManager fragmentManager = getFragmentManager();
+              fragmentManager.beginTransaction().replace(R.id.content_frame_product_list, fragment).commit();
+              Crouton.cancelAllCroutons();
+            }
+          }
+        });
+        cards.add(card);
         e.printStackTrace();
       }
     }
 
-    public static class ProductList extends Card{
+    public class ProductList extends Card{
 
       int productId;
       String productName;
@@ -250,7 +215,7 @@ public class ProductListFragment extends Fragment {
 
 
       @Override
-      public void setupInnerViewElements(ViewGroup parent, View view) {
+      public void setupInnerViewElements(final ViewGroup parent, View view) {
 
         //Retrieve elements
         ImageView circularImageView = (ImageView) parent.findViewById(R.id.product_image);
@@ -274,7 +239,11 @@ public class ProductListFragment extends Fragment {
         setOnClickListener(new OnCardClickListener() {
           @Override
           public void onClick(Card card, View view) {
-            Toast.makeText(context, "productId is : " + productId + " Name: " + productName, Toast.LENGTH_SHORT).show();
+            connected = connectedToInternetOrNot.ConnectedToInternetOrNot(activity);
+            if(connected == 1) {
+              Crouton.cancelAllCroutons();
+              Toast.makeText(context, "productId is : " + productId + " Name: " + productName, Toast.LENGTH_SHORT).show();
+            }
           }
         });
       }
