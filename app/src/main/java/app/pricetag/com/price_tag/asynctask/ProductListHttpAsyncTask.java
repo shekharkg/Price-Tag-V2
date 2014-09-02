@@ -8,12 +8,6 @@ import app.pricetag.com.price_tag.fragments.ProductListFragment;
 public class ProductListHttpAsyncTask extends AsyncTask<String, Void, String> {
 
   @Override
-  protected void onPreExecute() {
-    // TODO Auto-generated method stub
-    super.onPreExecute();
-  }
-
-  @Override
   protected String doInBackground(String... params) {
     return GetJsonString.GET(params[0]);
   }

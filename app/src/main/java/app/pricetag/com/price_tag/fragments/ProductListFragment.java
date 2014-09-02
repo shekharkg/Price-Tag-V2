@@ -28,6 +28,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import app.pricetag.com.price_tag.ProductListDetailActivity;
@@ -83,7 +84,6 @@ public class ProductListFragment extends Fragment {
           public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
             //what is the bottom iten that is visible
             int lastInScreen = firstVisibleItem + visibleItemCount;
-            Log.d("TAG", "lastInScreen." + lastInScreen);
             if(lastInScreen == start){
               new ProductListHttpAsyncTask().execute(ProductListDetailActivity.productListUrl + ProductListDetailActivity.sortOrder + start);
               if(start==0){
@@ -265,8 +265,8 @@ public class ProductListFragment extends Fragment {
           title.setText(productName);
           ratingBar.setRating(productRating);
           seller.setText(productSupplierCount + " seller found");
-          price.setText("Rs. " + productPrice);
-          saveupto.setText("Save upto : Rs. " + saveUpTO);
+          price.setText("Rs. " + NumberFormat.getNumberInstance().format(productPrice));
+          saveupto.setText("Save upto : Rs. " + NumberFormat.getNumberInstance().format(saveUpTO));
           if(saveUpTO == 0){
             saveupto.setVisibility(View.INVISIBLE);
           }
