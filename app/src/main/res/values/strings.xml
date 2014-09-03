@@ -4,5 +4,6 @@
     <string name="app_name">Price-Tag</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+    <string name="search_hint">Search anything!!!</string>
 
 </resources>

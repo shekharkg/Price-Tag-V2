@@ -34,6 +34,7 @@ public class ProductListDetailActivity extends Activity {
     productListUrl = getResources().getString(R.string.productListUrl) + subCategoryId;
     getFragmentManager().beginTransaction().add(R.id.content_frame_product_list, new ProductListFragment()).commit();
     actionBar = getActionBar();
+    actionBar.setIcon(R.drawable.ic_launcher);
     actionBar.setDisplayHomeAsUpEnabled(true);
     setTitleColor(getResources().getColor(R.color.almost_white_bg));
 
@@ -59,7 +60,8 @@ public class ProductListDetailActivity extends Activity {
 
     switch (item.getItemId()) {
       case R.id.action_search:
-        Toast.makeText(this, "Search touched", Toast.LENGTH_SHORT).show();
+        Intent searchIntent = new Intent(this, SearchActivity.class);
+        startActivity(searchIntent);
         return(true);
 
       case android.R.id.home:

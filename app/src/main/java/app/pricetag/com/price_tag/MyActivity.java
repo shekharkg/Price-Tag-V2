@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -125,7 +126,8 @@ public class MyActivity extends Activity {
     }
     switch (item.getItemId()) {
       case R.id.action_search:
-        Toast.makeText(this, "Search touched", Toast.LENGTH_SHORT).show();
+        Intent searchIntent = new Intent(this, SearchActivity.class);
+        startActivity(searchIntent);
         return(true);
     }
     return super.onOptionsItemSelected(item);
