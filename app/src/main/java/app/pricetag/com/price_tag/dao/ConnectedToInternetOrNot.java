@@ -37,7 +37,7 @@ public class ConnectedToInternetOrNot {
 
   private void crouton() {
     final Crouton crouton = Crouton.makeText(activity, "Please connect to Internet", Style.ALERT)
-        .setConfiguration(new Configuration.Builder().setDuration(Configuration.DURATION_INFINITE).build());
+        .setConfiguration(new Configuration.Builder().setDuration(Configuration.DURATION_LONG).build());
 
     crouton.setOnClickListener(new View.OnClickListener() {
       @Override
