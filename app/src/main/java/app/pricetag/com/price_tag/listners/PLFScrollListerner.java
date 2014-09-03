@@ -41,6 +41,8 @@ public class PLFScrollListerner extends SwipeOnScrollListener {
         Card card = new Card(fragment.getActivity());
         card.setInnerLayout(R.layout.loading_view_card);
         fragment.mCardArrayAdapter.add(card);
+        fragment.mCardArrayAdapter.setNotifyOnChange(true);
+        fragment.mCardArrayAdapter.notifyDataSetChanged();
       }
       fragment.start += 25;
     }
