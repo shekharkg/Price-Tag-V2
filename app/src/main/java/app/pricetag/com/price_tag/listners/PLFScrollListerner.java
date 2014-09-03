@@ -1,10 +1,11 @@
-package app.pricetag.com.price_tag.fragments;
+package app.pricetag.com.price_tag.listners;
 
 import android.widget.AbsListView;
 
 import app.pricetag.com.price_tag.ProductListDetailActivity;
 import app.pricetag.com.price_tag.R;
 import app.pricetag.com.price_tag.asynctask.ProductListHttpAsyncTask;
+import app.pricetag.com.price_tag.fragments.ProductListFragment;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.view.listener.SwipeOnScrollListener;
 

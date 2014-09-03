@@ -37,6 +37,7 @@ import app.pricetag.com.price_tag.ProductListDetailActivity;
 import app.pricetag.com.price_tag.R;
 import app.pricetag.com.price_tag.asynctask.ProductListHttpAsyncTask;
 import app.pricetag.com.price_tag.dao.ConnectedToInternetOrNot;
+import app.pricetag.com.price_tag.listners.PLFScrollListerner;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
@@ -54,11 +55,13 @@ public class ProductListFragment extends Fragment {
   public int totalProductCount;
   public ArrayList<Card> cards;
   CardListView listView;
-  CardArrayAdapter mCardArrayAdapter;
+  public CardArrayAdapter mCardArrayAdapter;
   AnimationAdapter animCardArrayAdapter;
   Activity activity;
   ConnectedToInternetOrNot connectedToInternetOrNot;
   int connected;
+  ProductListFragment fragment;
+  int clickCount;
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -77,7 +80,8 @@ public class ProductListFragment extends Fragment {
     animCardArrayAdapter = new ScaleInAnimationAdapter(mCardArrayAdapter);
     listView = (CardListView) getActivity().findViewById(R.id.card_list);
     listView.setAdapter(mCardArrayAdapter);
-    listView.setOnScrollListener(new PLFScrollListerner(this));
+    fragment = this;
+    listView.setOnScrollListener(new PLFScrollListerner(fragment));
     connectedToInternetOrNot = new ConnectedToInternetOrNot();
   }
 
@@ -117,6 +121,7 @@ public class ProductListFragment extends Fragment {
               ProductListDetailActivity.sortOrder = "&" + sortOrderName[position] + "&limit=25&start=";
               activity.getFragmentManager().beginTransaction().replace(R.id.content_frame_product_list, new ProductListFragment()).commit();
               rightLowerButton.detach();
+              Crouton.cancelAllCroutons();
             }
             dialog.dismiss();
           }
@@ -170,19 +175,29 @@ public class ProductListFragment extends Fragment {
       } catch (JSONException e) {
         Card card = new Card(activity);
         card.setInnerLayout(R.layout.retry_loading);
+        clickCount = 0;
         card.setOnClickListener(new Card.OnCardClickListener() {
           @Override
           public void onClick(Card card, View view) {
             connected = connectedToInternetOrNot.ConnectedToInternetOrNot(activity);
             if (connected == 1) {
-              Fragment fragment = new ProductListFragment();
-              FragmentManager fragmentManager = getFragmentManager();
-              fragmentManager.beginTransaction().replace(R.id.content_frame_product_list, fragment).commit();
+              clickCount = 1;
+              if (cards.size() < 25 && clickCount == 1) {
+                Fragment fragment = new ProductListFragment();
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.content_frame_product_list, fragment).commit();
+              } else if(clickCount == 1){
+                cards.remove(start - 25);
+                start = start - 25;
+                new PLFScrollListerner(fragment);
+              }
               Crouton.cancelAllCroutons();
+              mCardArrayAdapter.setNotifyOnChange(true);
+              mCardArrayAdapter.notifyDataSetChanged();
             }
           }
         });
-        cards.add(card);
+        mCardArrayAdapter.add(card);
         e.printStackTrace();
       }
     }
