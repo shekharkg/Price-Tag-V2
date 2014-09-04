@@ -2,11 +2,8 @@ package app.pricetag.com.price_tag;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.SearchManager;
-import android.app.SearchableInfo;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,8 +12,8 @@ import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SearchView;
-import android.widget.TextView;
-import android.widget.Toast;
+
+import app.pricetag.com.price_tag.fragments.SearchCategoryFragment;
 
 /**
  * Created by shekhar on 3/9/14.
@@ -25,6 +22,10 @@ public class SearchActivity extends Activity implements SearchView.OnQueryTextLi
 
   private SearchView mSearchView;
   private ActionBar actionBar;
+  public static String queryString;
+  public static FragmentManager manager;
+  public static String searchListUrl;
+  public static String searchKey;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +38,8 @@ public class SearchActivity extends Activity implements SearchView.OnQueryTextLi
     actionBar.setDisplayHomeAsUpEnabled(true);
     setTitleColor(getResources().getColor(R.color.almost_white_bg));
     actionBar.setTitle("Search any Product");
+    manager = getFragmentManager();
+    searchListUrl = getResources().getString(R.string.search_product_list);
   }
 
   @Override
@@ -64,10 +67,6 @@ public class SearchActivity extends Activity implements SearchView.OnQueryTextLi
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
-//      case R.id.action_search:
-//        Toast.makeText(this,"Search",Toast.LENGTH_SHORT).show();
-//        return(true);
-
       case android.R.id.home:
         finish();
         return(true);
@@ -80,7 +79,11 @@ public class SearchActivity extends Activity implements SearchView.OnQueryTextLi
   }
 
   public boolean onQueryTextSubmit(String query) {
-    Toast.makeText(this,query,Toast.LENGTH_SHORT).show();
+    queryString = query.replaceAll(" ", "+");
+    SearchCategoryFragment searchCategoryFragment = new SearchCategoryFragment();
+    FragmentTransaction transaction = manager.beginTransaction();
+    transaction.replace(R.id.content_frame_product_list, searchCategoryFragment,"searchCategoryFragment");
+    transaction.commit();
     return false;
   }
 }
