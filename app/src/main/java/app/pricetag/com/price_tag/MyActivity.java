@@ -20,6 +20,9 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import app.pricetag.com.price_tag.adapters.DrawerDataAdapter;
 import app.pricetag.com.price_tag.dao.ConnectedToInternetOrNot;
 import app.pricetag.com.price_tag.fragments.CategoryFragment;
@@ -38,6 +41,7 @@ public class MyActivity extends Activity {
   public static int fragmentCount;
   ConnectedToInternetOrNot connectedToInternetOrNot;
   int connected;
+  private AdView adView;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +93,37 @@ public class MyActivity extends Activity {
       //do action on startup
     }
 
+    adView = (AdView) findViewById(R.id.adView);
+    AdRequest adRequest = new AdRequest.Builder()
+        .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+        .addTestDevice(getResources().getString(R.string.device_id))
+        .build();
+    adView.loadAd(adRequest);
+  }
+  @Override
+  public void onResume() {
+    super.onResume();
+    if (adView != null) {
+      adView.resume();
+    }
+  }
+
+  @Override
+  public void onPause() {
+    if (adView != null) {
+      adView.pause();
+    }
+    super.onPause();
+  }
+
+  /** Called before the activity is destroyed. */
+  @Override
+  public void onDestroy() {
+    // Destroy the AdView.
+    if (adView != null) {
+      adView.destroy();
+    }
+    super.onDestroy();
   }
 
   @Override

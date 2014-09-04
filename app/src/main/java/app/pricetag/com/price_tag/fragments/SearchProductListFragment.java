@@ -101,59 +101,64 @@ public class SearchProductListFragment extends Fragment {
 
 
     JSONObject jsonObject = null;
-    try {
-      jsonObject = new JSONObject(jsonString);
-      JSONArray jsonArray = jsonObject.getJSONArray("products");
-      //totalProductCount = Integer.parseInt(jsonObject.getString("count"));
-      for(int i=0; i<jsonArray.length(); i++) {
-        JSONObject productObject = jsonArray.getJSONObject(i);
-        int productId = Integer.parseInt(productObject.getString("id_product"));
-        String productName = productObject.getString("name");
-        int productPrice = Integer.parseInt(productObject.getString("price"));
-        String productImage = productObject.getString("image");
-        float productRating = Float.parseFloat(productObject.getString("average_rating"));
-        int productSupplierCount = Integer.parseInt(productObject.getString("supplier_count"));
+    if(jsonString == ""){
+      Toast.makeText(context,"No item found!!!" + "\n" + "Try something else.",Toast.LENGTH_SHORT).show();
+      mCardArrayAdapter.clear();
+    } else {
+      try {
+        jsonObject = new JSONObject(jsonString);
+        JSONArray jsonArray = jsonObject.getJSONArray("products");
+        //totalProductCount = Integer.parseInt(jsonObject.getString("count"));
+        for(int i=0; i<jsonArray.length(); i++) {
+          JSONObject productObject = jsonArray.getJSONObject(i);
+          int productId = Integer.parseInt(productObject.getString("id_product"));
+          String productName = productObject.getString("name");
+          int productPrice = Integer.parseInt(productObject.getString("price"));
+          String productImage = productObject.getString("image");
+          float productRating = Float.parseFloat(productObject.getString("average_rating"));
+          int productSupplierCount = Integer.parseInt(productObject.getString("supplier_count"));
 
           ProductList card = new ProductList(context, productId, productName, productPrice, productImage,
               productRating, productSupplierCount);
           mCardArrayAdapter.add(card);
           mCardArrayAdapter.setNotifyOnChange(true);
           mCardArrayAdapter.notifyDataSetChanged();
-      }
-
-    } catch (JSONException e) {
-      Card card = new Card(activity);
-      card.setInnerLayout(R.layout.retry_loading);
-      card.setOnClickListener(new Card.OnCardClickListener() {
-        @Override
-        public void onClick(Card card, View view) {
-          connected = connectedToInternetOrNot.ConnectedToInternetOrNot(activity);
-          if (connected == 1) {
-            if (cards.size() < 25) {
-              SearchCategoryFragment searchCategoryFragment = new SearchCategoryFragment();
-              FragmentTransaction transaction = SearchActivity.manager.beginTransaction();
-              transaction.replace(R.id.content_frame_product_list, searchCategoryFragment,"searchCategoryFragment");
-              transaction.commit();
-            } else {
-              cards.remove(start - 25);
-              start = start - 25;
-              Card cardR = new Card(fragment.getActivity());
-              cardR.setInnerLayout(R.layout.loading_view_card);
-              fragment.mCardArrayAdapter.add(cardR);
-              fragment.mCardArrayAdapter.setNotifyOnChange(true);
-              fragment.mCardArrayAdapter.notifyDataSetChanged();
-              new SearchProductListHttpAsyncTask(fragment).execute(SearchActivity.searchListUrl +
-                  SearchActivity.searchKey + "&limit=25&start=" + start);
-              start += 25;
-            }
-            Crouton.cancelAllCroutons();
-            mCardArrayAdapter.setNotifyOnChange(true);
-            mCardArrayAdapter.notifyDataSetChanged();
-          }
         }
-      });
-      mCardArrayAdapter.add(card);
-      e.printStackTrace();
+
+      } catch (JSONException e) {
+        Card card = new Card(activity);
+        card.setInnerLayout(R.layout.retry_loading);
+        card.setOnClickListener(new Card.OnCardClickListener() {
+          @Override
+          public void onClick(Card card, View view) {
+            connected = connectedToInternetOrNot.ConnectedToInternetOrNot(activity);
+            if (connected == 1) {
+              if (cards.size() < 25) {
+                SearchCategoryFragment searchCategoryFragment = new SearchCategoryFragment();
+                FragmentTransaction transaction = SearchActivity.manager.beginTransaction();
+                transaction.replace(R.id.content_frame_product_list, searchCategoryFragment,"searchCategoryFragment");
+                transaction.commit();
+              } else {
+                cards.remove(start - 25);
+                start = start - 25;
+                Card cardR = new Card(fragment.getActivity());
+                cardR.setInnerLayout(R.layout.loading_view_card);
+                fragment.mCardArrayAdapter.add(cardR);
+                fragment.mCardArrayAdapter.setNotifyOnChange(true);
+                fragment.mCardArrayAdapter.notifyDataSetChanged();
+                new SearchProductListHttpAsyncTask(fragment).execute(SearchActivity.searchListUrl +
+                    SearchActivity.searchKey + "&limit=25&start=" + start);
+                start += 25;
+              }
+              Crouton.cancelAllCroutons();
+              mCardArrayAdapter.setNotifyOnChange(true);
+              mCardArrayAdapter.notifyDataSetChanged();
+            }
+          }
+        });
+        mCardArrayAdapter.add(card);
+        e.printStackTrace();
+      }
     }
   }
 

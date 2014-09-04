@@ -30,5 +30,5 @@ dependencies {
         // exclusion is not neccessary, but generally a good idea.
         exclude group: 'com.google.android', module: 'support-v4'
     }
-
+    compile 'com.google.android.gms:play-services:4.0.30'
 }

@@ -13,7 +13,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SearchView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
+import app.pricetag.com.price_tag.fragments.CategoryFragment;
 import app.pricetag.com.price_tag.fragments.SearchCategoryFragment;
+import app.pricetag.com.price_tag.fragments.SearchProductListFragment;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 /**
  * Created by shekhar on 3/9/14.
@@ -26,6 +32,8 @@ public class SearchActivity extends Activity implements SearchView.OnQueryTextLi
   public static FragmentManager manager;
   public static String searchListUrl;
   public static String searchKey;
+  public static int fragmentCount;
+  private AdView adView;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +48,51 @@ public class SearchActivity extends Activity implements SearchView.OnQueryTextLi
     actionBar.setTitle("Search any Product");
     manager = getFragmentManager();
     searchListUrl = getResources().getString(R.string.search_product_list);
+    fragmentCount=0;
+    adView = (AdView) findViewById(R.id.adView);
+    AdRequest adRequest = new AdRequest.Builder()
+        .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+        .addTestDevice(getResources().getString(R.string.device_id))
+        .build();
+    adView.loadAd(adRequest);
+  }
+  @Override
+  public void onResume() {
+    super.onResume();
+    if (adView != null) {
+      adView.resume();
+    }
+  }
+
+  @Override
+  public void onPause() {
+    if (adView != null) {
+      adView.pause();
+    }
+    super.onPause();
+  }
+
+  /** Called before the activity is destroyed. */
+  @Override
+  public void onDestroy() {
+    // Destroy the AdView.
+    if (adView != null) {
+      adView.destroy();
+    }
+    super.onDestroy();
+  }
+
+  @Override
+  public void onBackPressed() {
+    Crouton.cancelAllCroutons();
+    if (fragmentCount == 1) {
+      getFragmentManager().beginTransaction()
+          .replace(R.id.content_frame_product_list,new SearchCategoryFragment()).commit();
+      fragmentCount = 0;
+    } else {
+      super.onBackPressed();
+      this.finish();
+    }
   }
 
   @Override
@@ -79,11 +132,10 @@ public class SearchActivity extends Activity implements SearchView.OnQueryTextLi
   }
 
   public boolean onQueryTextSubmit(String query) {
+    fragmentCount = 1;
+    getFragmentManager().beginTransaction()
+        .replace(R.id.content_frame_product_list, new SearchCategoryFragment()).commit();
     queryString = query.replaceAll(" ", "+");
-    SearchCategoryFragment searchCategoryFragment = new SearchCategoryFragment();
-    FragmentTransaction transaction = manager.beginTransaction();
-    transaction.replace(R.id.content_frame_product_list, searchCategoryFragment,"searchCategoryFragment");
-    transaction.commit();
     return false;
   }
 }

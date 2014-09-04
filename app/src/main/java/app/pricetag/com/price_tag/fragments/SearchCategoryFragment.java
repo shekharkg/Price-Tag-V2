@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,51 +68,53 @@ public class SearchCategoryFragment extends Fragment {
 
   public void subCategoryDao(String jsonString) {
     cards.remove(0);
+    if(jsonString == ""){
+      Toast.makeText(context,"No item found!!!" + "\n" + "Try something else.",Toast.LENGTH_SHORT).show();
+      mCardArrayAdapter.clear();
+    } else{
+        try {
+          JSONObject jsonObject = new JSONObject(jsonString);
+          JSONArray jsonArray = jsonObject.getJSONArray("results");
 
-    try {
-      JSONObject jsonObject = new JSONObject(jsonString);
-      JSONArray jsonArray = jsonObject.getJSONArray("results");
-
-      for(int i=0; i<jsonArray.length(); i++) {
-        JSONObject resultObject = jsonArray.getJSONObject(i);
-        String resultCategoryListName = resultObject.getString("category");
-        int resultCategoryProductCount = Integer.parseInt(resultObject.getString("count"));
-        int resultCategoryProductId = Integer.parseInt(resultObject.getString("id_category"));
-        ResultCategoryList card = new ResultCategoryList(resultCategoryListName,resultCategoryProductCount,resultCategoryProductId);
-        cards.add(card);
-      }
-      AnimationAdapter animCardArrayAdapter;
-      if (listView!=null){
-        listView.setAdapter(mCardArrayAdapter);
-        animCardArrayAdapter = new ScaleInAnimationAdapter(mCardArrayAdapter);
-        animCardArrayAdapter.setAbsListView(listView);
-        listView.setExternalAdapter(animCardArrayAdapter, mCardArrayAdapter);
-      }
-
-    } catch (JSONException e) {
-      Card card = new Card((SearchActivity) getActivity());
-      card.setInnerLayout(R.layout.retry_loading);
-      card.setOnClickListener(new Card.OnCardClickListener() {
-        @Override
-        public void onClick(Card card, View view) {
-          connected = connectedToInternetOrNot.ConnectedToInternetOrNot((SearchActivity) getActivity());
-          if(connected == 1) {
-            SearchCategoryFragment searchCategoryFragment = new SearchCategoryFragment();
-            FragmentTransaction transaction = SearchActivity.manager.beginTransaction();
-            transaction.replace(R.id.content_frame_product_list, searchCategoryFragment,"searchCategoryFragment");
-            transaction.commit();
-            Crouton.cancelAllCroutons();
+          for(int i=0; i<jsonArray.length(); i++) {
+            JSONObject resultObject = jsonArray.getJSONObject(i);
+            String resultCategoryListName = resultObject.getString("category");
+            int resultCategoryProductCount = Integer.parseInt(resultObject.getString("count"));
+            int resultCategoryProductId = Integer.parseInt(resultObject.getString("id_category"));
+            ResultCategoryList card = new ResultCategoryList(resultCategoryListName,resultCategoryProductCount,resultCategoryProductId);
+            cards.add(card);
           }
+          AnimationAdapter animCardArrayAdapter;
+          if (listView!=null){
+            listView.setAdapter(mCardArrayAdapter);
+            animCardArrayAdapter = new ScaleInAnimationAdapter(mCardArrayAdapter);
+            animCardArrayAdapter.setAbsListView(listView);
+            listView.setExternalAdapter(animCardArrayAdapter, mCardArrayAdapter);
+          }
+
+        } catch (JSONException e) {
+          Card card = new Card((SearchActivity) getActivity());
+          card.setInnerLayout(R.layout.retry_loading);
+          card.setOnClickListener(new Card.OnCardClickListener() {
+            @Override
+            public void onClick(Card card, View view) {
+              connected = connectedToInternetOrNot.ConnectedToInternetOrNot((SearchActivity) getActivity());
+              if(connected == 1) {
+                SearchCategoryFragment searchCategoryFragment = new SearchCategoryFragment();
+                FragmentTransaction transaction = SearchActivity.manager.beginTransaction();
+                transaction.replace(R.id.content_frame_product_list, searchCategoryFragment,"searchCategoryFragment");
+                transaction.commit();
+                Crouton.cancelAllCroutons();
+              }
+            }
+          });
+          cards.add(card);
+          if (listView!=null) {
+            listView.setAdapter(mCardArrayAdapter);
+          }
+          e.printStackTrace();
         }
-      });
-      cards.add(card);
-      if (listView!=null) {
-        listView.setAdapter(mCardArrayAdapter);
-      }
-      e.printStackTrace();
     }
-
-
   }
 
   public class ResultCategoryList extends Card{
@@ -142,11 +145,11 @@ public class SearchCategoryFragment extends Fragment {
         public void onClick(Card card, View view) {
           connected = connectedToInternetOrNot.ConnectedToInternetOrNot((SearchActivity) getActivity());
           if(connected == 1){
+            SearchActivity.fragmentCount = 1;
+            resultCategoryListName = resultCategoryListName.replaceAll(" " , "+");
             SearchActivity.searchKey = SearchActivity.queryString + "&category=" + resultCategoryListName;
-            SearchProductListFragment searchProductListFragment = new SearchProductListFragment();
-            FragmentTransaction transaction = SearchActivity.manager.beginTransaction();
-            transaction.replace(R.id.content_frame_product_list, searchProductListFragment, "searchCategoryFragment");
-            transaction.commit();
+            getFragmentManager().beginTransaction()
+                .replace(R.id.content_frame_product_list, new SearchProductListFragment()).commit();
             Crouton.cancelAllCroutons();
           }
         }

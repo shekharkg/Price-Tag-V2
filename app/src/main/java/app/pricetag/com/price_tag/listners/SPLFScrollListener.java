@@ -1,14 +1,9 @@
 package app.pricetag.com.price_tag.listners;
 
 import android.widget.AbsListView;
-import android.widget.Toast;
-
-import app.pricetag.com.price_tag.ProductListDetailActivity;
 import app.pricetag.com.price_tag.R;
 import app.pricetag.com.price_tag.SearchActivity;
-import app.pricetag.com.price_tag.asynctask.ProductListHttpAsyncTask;
 import app.pricetag.com.price_tag.asynctask.SearchProductListHttpAsyncTask;
-import app.pricetag.com.price_tag.fragments.ProductListFragment;
 import app.pricetag.com.price_tag.fragments.SearchProductListFragment;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.view.listener.SwipeOnScrollListener;
