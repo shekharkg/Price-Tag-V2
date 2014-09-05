@@ -150,6 +150,7 @@ public class SearchCategoryFragment extends Fragment {
             SearchActivity.searchKey = SearchActivity.queryString + "&category=" + resultCategoryListName;
             getFragmentManager().beginTransaction()
                 .replace(R.id.content_frame_product_list, new SearchProductListFragment()).commit();
+            SearchActivity.imm.hideSoftInputFromWindow(SearchActivity.mSearchView.getWindowToken(), 0);
             Crouton.cancelAllCroutons();
           }
         }

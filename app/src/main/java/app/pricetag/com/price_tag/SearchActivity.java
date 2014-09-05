@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SearchView;
@@ -26,7 +27,7 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
  */
 public class SearchActivity extends Activity implements SearchView.OnQueryTextListener {
 
-  private SearchView mSearchView;
+  public static SearchView mSearchView;
   private ActionBar actionBar;
   public static String queryString;
   public static FragmentManager manager;
@@ -34,6 +35,7 @@ public class SearchActivity extends Activity implements SearchView.OnQueryTextLi
   public static String searchKey;
   public static int fragmentCount;
   private AdView adView;
+  public static InputMethodManager imm;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +123,14 @@ public class SearchActivity extends Activity implements SearchView.OnQueryTextLi
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       case android.R.id.home:
-        finish();
+        Crouton.cancelAllCroutons();
+        if (fragmentCount == 1) {
+          getFragmentManager().beginTransaction()
+              .replace(R.id.content_frame_product_list,new SearchCategoryFragment()).commit();
+          fragmentCount = 0;
+        } else {
+          finish();
+        }
         return(true);
     }
     return super.onOptionsItemSelected(item);
@@ -132,10 +141,11 @@ public class SearchActivity extends Activity implements SearchView.OnQueryTextLi
   }
 
   public boolean onQueryTextSubmit(String query) {
-    fragmentCount = 1;
     getFragmentManager().beginTransaction()
         .replace(R.id.content_frame_product_list, new SearchCategoryFragment()).commit();
     queryString = query.replaceAll(" ", "+");
+    imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+    imm.hideSoftInputFromWindow(mSearchView.getWindowToken(), 0);
     return false;
   }
 }

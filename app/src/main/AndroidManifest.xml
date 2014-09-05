@@ -23,6 +23,8 @@
         </activity>
         <activity android:name=".ProductListDetailActivity"
                   android:screenOrientation="portrait"/>
+        <activity android:name=".ProductDetails"
+                  android:screenOrientation="portrait"/>
         <activity android:name=".SearchActivity"
                   android:screenOrientation="portrait"/>
     </application>
