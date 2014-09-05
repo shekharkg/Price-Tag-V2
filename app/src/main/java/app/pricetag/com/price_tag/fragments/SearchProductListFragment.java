@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +32,7 @@ import org.json.JSONObject;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
+import app.pricetag.com.price_tag.ProductDetails;
 import app.pricetag.com.price_tag.ProductListDetailActivity;
 import app.pricetag.com.price_tag.R;
 import app.pricetag.com.price_tag.SearchActivity;
@@ -211,7 +213,12 @@ public class SearchProductListFragment extends Fragment {
           connected = connectedToInternetOrNot.ConnectedToInternetOrNot(activity);
           if(connected == 1) {
             Crouton.cancelAllCroutons();
-            Toast.makeText(context, "productId is : " + productId + " Name: " + productName, Toast.LENGTH_SHORT).show();
+            SearchActivity.imm.hideSoftInputFromWindow(SearchActivity.mSearchView.getWindowToken(), 0);
+            Intent intent = new Intent(context,ProductDetails.class);
+            intent.putExtra("productId", productId);
+            intent.putExtra("productName",productName);
+            Crouton.cancelAllCroutons();
+            context.startActivity(intent);
           }
         }
       });
