@@ -1,6 +1,7 @@
 package app.pricetag.com.price_tag.fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -99,16 +100,14 @@ public class ProductListFragment extends Fragment {
         final String[] sortOrderName = activity.getResources().getStringArray(R.array.dialog_sort_order);
 
         // custom dialog
-        final Dialog dialog = new Dialog(context);
-        dialog.setContentView(R.layout.dialog_listview);
-        dialog.setTitle("Sort by...");
-        //dialog.setCanceledOnTouchOutside(false);
-        // set the custom dialog components - text, image and button
-        ListView listViewDialog = (ListView) dialog.findViewById(R.id.listView);
+        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
+        final LayoutInflater inflater = getActivity().getLayoutInflater();
+        final View viewD = inflater.inflate(R.layout.dialog_listview, null);
+        dialogBuilder.setView(viewD);
+        ListView listViewDialog = (ListView) viewD.findViewById(R.id.listView);
         DialogAdapter dialogAdapter = new DialogAdapter(context,sortName);
         listViewDialog.setAdapter(dialogAdapter);
-
-        dialog.show();
+        final Dialog dialog = dialogBuilder.show();
 
         listViewDialog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
           @Override
@@ -122,6 +121,7 @@ public class ProductListFragment extends Fragment {
               Crouton.cancelAllCroutons();
             }
             dialog.dismiss();
+
           }
         });
       }

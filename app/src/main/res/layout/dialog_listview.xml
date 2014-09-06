@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent" >
+                android:layout_height="fill_parent"
+                android:background="@color/material_teal"
+                android:orientation="vertical">
 
+    <TextView
+        android:layout_marginLeft="10dp"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sort by..."
+        android:textColor="@color/almost_white_bg"
+        android:textSize="28sp"
+        android:textStyle="bold"/>
 
     <ListView
         android:layout_width="match_parent"
@@ -12,4 +23,4 @@
         android:dividerHeight="1dp"
         android:background="@color/almost_white_bg"/>
 
-</RelativeLayout>
+</LinearLayout>

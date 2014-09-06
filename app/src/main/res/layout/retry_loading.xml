@@ -1,16 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_height="fill_parent"
-              android:layout_width="fill_parent"
-              android:background="#FFFFFF"
-              android:gravity="center"
-              android:padding="12dp"
-              android:baselineAligned="true">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_height="fill_parent"
+                android:layout_width="fill_parent"
+                android:background="@color/almost_white_bg"
+                android:padding="12dp"
+                android:gravity="center"
+                android:baselineAligned="true">
+
+
+    <ImageView
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:id="@+id/imageView"
+        android:src="@drawable/ic_launcher"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/textWrong"
+        android:layout_toEndOf="@+id/textWrong"/>
+
     <TextView
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
+        android:gravity="center_horizontal"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:text="Something went wrong.\n \t \t \t \t Tap to retry."
-        android:textColor="@color/material_teal"/>
-</LinearLayout> 
+        android:textColor="@color/material_teal"
+        android:layout_height="40dp"
+        android:text="Something went wrong."
+        android:id="@+id/textWrong"
+        android:layout_alignParentTop="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:gravity="center_horizontal"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/material_teal"
+        android:layout_height="40dp"
+        android:text="Tap to retry."
+        android:id="@+id/textRetry"
+        android:layout_alignBottom="@+id/imageView"
+        android:layout_alignRight="@+id/textWrong"
+        android:layout_alignEnd="@+id/textWrong"
+        android:layout_marginRight="60dp"/>
+
+</RelativeLayout>
+
+
