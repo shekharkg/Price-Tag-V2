@@ -53,16 +53,14 @@ public class ProductDetailsFragment extends Fragment {
       }
       mPagedHeadList.setHeaderOffScreenPageLimit(imageArray.length()-1);
       mPagedHeadList.setHeaderPageTransformer(PageTransformerTypes.ACCORDION);
+
       ArrayList<String> mockItemList = new ArrayList<String>();
-      for (int i = 0; i < 50; i++)
-        mockItemList.add(getResources().getString(R.string.mock_item) + " " + (i+1));
+      mockItemList.add(ProductDetailsActivity.productName);
       MockListAdapter mockListAdapter = new MockListAdapter(getActivity(), R.layout.mock_list_item, mockItemList);
       mPagedHeadList.setAdapter(mockListAdapter);
     }catch (Exception e){
       e.printStackTrace();
     }
-
-
   }
 
 }

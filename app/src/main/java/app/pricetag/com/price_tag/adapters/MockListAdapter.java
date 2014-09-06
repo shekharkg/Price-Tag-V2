@@ -39,7 +39,7 @@ public class MockListAdapter extends ArrayAdapter<String> {
             convertView = inflater.inflate(layoutResourceId, null);
 
             holder = new ViewHolder();
-            holder.text = (TextView) convertView.findViewById(R.id.text);
+            holder.text = (TextView) convertView.findViewById(R.id.titleCategory);
 
             convertView.setTag(holder);
         } else

@@ -27,7 +27,7 @@ public class ProductDetailsActivity extends FragmentActivity {
   private File photofile;
   private AdView adView;
   private ActionBar actionBar;
-  public static String idUrl, imageUrl;
+  public static String idUrl, imageUrl, productName;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +37,8 @@ public class ProductDetailsActivity extends FragmentActivity {
     Intent intent = getIntent();
     if(intent != null){
       productId = intent.getIntExtra("productId",0);
-      setTitle(intent.getStringExtra("productName"));
+      productName = intent.getStringExtra("productName");
+      setTitle(productName);
     }
     actionBar = getActionBar();
     actionBar.setIcon(R.drawable.ic_launcher);
@@ -100,6 +101,19 @@ public class ProductDetailsActivity extends FragmentActivity {
     mShareActionProvider.setShareIntent(getShareIntent());
 
     return true;
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    // The action bar home/up action should open or close the drawer.
+    // ActionBarDrawerToggle will take care of this.
+
+    switch (item.getItemId()) {
+      case android.R.id.home:
+        finish();
+        return(true);
+    }
+    return super.onOptionsItemSelected(item);
   }
 
   private Intent getShareIntent(){
