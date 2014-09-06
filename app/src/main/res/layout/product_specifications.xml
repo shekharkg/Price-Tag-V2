@@ -8,9 +8,10 @@
         android:id="@+id/pagedHeadListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clickable="false"
         pagedheadlistview:headerHeight="300dp"
         pagedheadlistview:indicatorType="bottomAligned"
-        pagedheadlistview:disableVerticalTouchOnHeader="true"
+        pagedheadlistview:disableVerticalTouchOnHeader="false"
         pagedheadlistview:indicatorBgColor="@color/material_teal"
         pagedheadlistview:indicatorColor="@color/material_light_teal" />
 
