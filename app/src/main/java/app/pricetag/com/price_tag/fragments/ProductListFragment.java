@@ -7,6 +7,7 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 import app.pricetag.com.price_tag.ProductDetailsActivity;
 import app.pricetag.com.price_tag.ProductListDetailActivity;
 import app.pricetag.com.price_tag.R;
+import app.pricetag.com.price_tag.adapters.DialogAdapter;
 import app.pricetag.com.price_tag.asynctask.ProductListHttpAsyncTask;
 import app.pricetag.com.price_tag.dao.ConnectedToInternetOrNot;
 import app.pricetag.com.price_tag.listners.PLFScrollListener;
@@ -81,7 +83,7 @@ public class ProductListFragment extends Fragment {
 
 
 
-  public void sortmenu(){
+  protected void sortmenu(){
     final ImageView fabIconNew = new ImageView(activity);
     fabIconNew.setImageDrawable(activity.getResources().getDrawable(R.drawable.ic_action_collections_sort_by_size));
     final FloatingActionButton rightLowerButton = new FloatingActionButton.Builder(activity)
@@ -103,8 +105,9 @@ public class ProductListFragment extends Fragment {
         //dialog.setCanceledOnTouchOutside(false);
         // set the custom dialog components - text, image and button
         ListView listViewDialog = (ListView) dialog.findViewById(R.id.listView);
-        ArrayAdapter<String> dialogAdapter = new ArrayAdapter<String>(activity,R.layout.dialog_single_row,R.id.text1,sortName);
+        DialogAdapter dialogAdapter = new DialogAdapter(context,sortName);
         listViewDialog.setAdapter(dialogAdapter);
+
         dialog.show();
 
         listViewDialog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -113,6 +116,7 @@ public class ProductListFragment extends Fragment {
             connected = connectedToInternetOrNot.ConnectedToInternetOrNot(activity);
             if (connected == 1) {
               ProductListDetailActivity.sortOrder = "&" + sortOrderName[position] + "&limit=25&start=";
+              ProductListDetailActivity.dialogSelectedIndex = position;
               activity.getFragmentManager().beginTransaction().replace(R.id.content_frame_product_list, new ProductListFragment()).commit();
               rightLowerButton.detach();
               Crouton.cancelAllCroutons();
