@@ -23,7 +23,7 @@
         </activity>
         <activity android:name=".ProductListDetailActivity"
                   android:screenOrientation="portrait"/>
-        <activity android:name=".ProductDetails"
+        <activity android:name=".ProductDetailsActivity"
                   android:screenOrientation="portrait"/>
         <activity android:name=".SearchActivity"
                   android:screenOrientation="portrait"/>

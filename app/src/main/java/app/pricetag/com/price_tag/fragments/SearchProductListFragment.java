@@ -1,9 +1,7 @@
 package app.pricetag.com.price_tag.fragments;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
@@ -11,10 +9,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,8 +17,6 @@ import android.widget.Toast;
 import com.koushikdutta.ion.Ion;
 import com.nhaarman.listviewanimations.swinginadapters.AnimationAdapter;
 import com.nhaarman.listviewanimations.swinginadapters.prepared.ScaleInAnimationAdapter;
-import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
-import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,14 +25,11 @@ import org.json.JSONObject;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
-import app.pricetag.com.price_tag.ProductDetails;
-import app.pricetag.com.price_tag.ProductListDetailActivity;
+import app.pricetag.com.price_tag.ProductDetailsActivity;
 import app.pricetag.com.price_tag.R;
 import app.pricetag.com.price_tag.SearchActivity;
-import app.pricetag.com.price_tag.asynctask.ProductListHttpAsyncTask;
 import app.pricetag.com.price_tag.asynctask.SearchProductListHttpAsyncTask;
 import app.pricetag.com.price_tag.dao.ConnectedToInternetOrNot;
-import app.pricetag.com.price_tag.listners.PLFScrollListerner;
 import app.pricetag.com.price_tag.listners.SPLFScrollListener;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import it.gmariotti.cardslib.library.internal.Card;
@@ -214,7 +204,7 @@ public class SearchProductListFragment extends Fragment {
           if(connected == 1) {
             Crouton.cancelAllCroutons();
             SearchActivity.imm.hideSoftInputFromWindow(SearchActivity.mSearchView.getWindowToken(), 0);
-            Intent intent = new Intent(context,ProductDetails.class);
+            Intent intent = new Intent(context,ProductDetailsActivity.class);
             intent.putExtra("productId", productId);
             intent.putExtra("productName",productName);
             Crouton.cancelAllCroutons();

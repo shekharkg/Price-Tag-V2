@@ -7,18 +7,15 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.koushikdutta.ion.Ion;
 import com.nhaarman.listviewanimations.swinginadapters.AnimationAdapter;
@@ -33,20 +30,16 @@ import org.json.JSONObject;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
-import app.pricetag.com.price_tag.MyActivity;
-import app.pricetag.com.price_tag.ProductDetails;
+import app.pricetag.com.price_tag.ProductDetailsActivity;
 import app.pricetag.com.price_tag.ProductListDetailActivity;
 import app.pricetag.com.price_tag.R;
 import app.pricetag.com.price_tag.asynctask.ProductListHttpAsyncTask;
 import app.pricetag.com.price_tag.dao.ConnectedToInternetOrNot;
-import app.pricetag.com.price_tag.listners.PLFScrollListerner;
+import app.pricetag.com.price_tag.listners.PLFScrollListener;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
-import it.gmariotti.cardslib.library.internal.CardThumbnail;
 import it.gmariotti.cardslib.library.view.CardListView;
-import it.gmariotti.cardslib.library.view.CardView;
-import it.gmariotti.cardslib.library.view.listener.SwipeOnScrollListener;
 
 /**
  * Created by shekhar on 28/8/14.
@@ -82,7 +75,7 @@ public class ProductListFragment extends Fragment {
     listView = (CardListView) getActivity().findViewById(R.id.card_list);
     listView.setAdapter(mCardArrayAdapter);
     fragment = this;
-    listView.setOnScrollListener(new PLFScrollListerner(fragment));
+    listView.setOnScrollListener(new PLFScrollListener(fragment));
     connectedToInternetOrNot = new ConnectedToInternetOrNot();
   }
 
@@ -263,7 +256,7 @@ public class ProductListFragment extends Fragment {
             connected = connectedToInternetOrNot.ConnectedToInternetOrNot(activity);
             if(connected == 1) {
               Crouton.cancelAllCroutons();
-              Intent intent = new Intent(context,ProductDetails.class);
+              Intent intent = new Intent(context,ProductDetailsActivity.class);
               intent.putExtra("productId", productId);
               intent.putExtra("productName",productName);
               Crouton.cancelAllCroutons();
