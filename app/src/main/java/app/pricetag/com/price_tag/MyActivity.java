@@ -41,7 +41,6 @@ public class MyActivity extends Activity {
   public static int fragmentCount;
   ConnectedToInternetOrNot connectedToInternetOrNot;
   int connected;
-  private AdView adView;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -92,38 +91,6 @@ public class MyActivity extends Activity {
     if (savedInstanceState == null) {
       //do action on startup
     }
-
-    adView = (AdView) findViewById(R.id.adView);
-    AdRequest adRequest = new AdRequest.Builder()
-        .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-        .addTestDevice(getResources().getString(R.string.device_id))
-        .build();
-    adView.loadAd(adRequest);
-  }
-  @Override
-  public void onResume() {
-    super.onResume();
-    if (adView != null) {
-      adView.resume();
-    }
-  }
-
-  @Override
-  public void onPause() {
-    if (adView != null) {
-      adView.pause();
-    }
-    super.onPause();
-  }
-
-  /** Called before the activity is destroyed. */
-  @Override
-  public void onDestroy() {
-    // Destroy the AdView.
-    if (adView != null) {
-      adView.destroy();
-    }
-    super.onDestroy();
   }
 
   @Override

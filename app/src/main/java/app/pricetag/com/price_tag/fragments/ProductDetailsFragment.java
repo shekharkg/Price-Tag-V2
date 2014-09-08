@@ -23,11 +23,16 @@ import org.json.JSONObject;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import app.pricetag.com.price_tag.ProductDetailsActivity;
 import app.pricetag.com.price_tag.R;
 import app.pricetag.com.price_tag.asynctask.DetailsHttpASyncTask;
 import app.pricetag.com.price_tag.asynctask.ImageHttpAsyncTask;
+import app.pricetag.com.price_tag.model.FeatureObject;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
@@ -86,8 +91,38 @@ public class ProductDetailsFragment extends Fragment {
     mCardArrayAdapterDetails.notifyDataSetChanged();
   }
 
-  public void detailsDao(String jsonResult) {
+  public void detailsDao(String productDetails) {
+    try {
+      JSONObject productJson  = new JSONObject(productDetails);
+      JSONObject features = productJson.getJSONObject("features").getJSONObject("group_features");
+      Map<String, List<FeatureObject>> featureMap = new TreeMap<String, List<FeatureObject>>();
+      Iterator keys = features.keys();
+      while(keys.hasNext()) {
+        String key = keys.next().toString();
+        JSONArray featureArray = features.getJSONArray(key);
+        List<FeatureObject> indFeatureMap = new ArrayList<FeatureObject>();
+        for(int i = 0; i < featureArray.length(); i++) {
+          JSONObject jsonObject = featureArray.getJSONObject(i);
+          String name = jsonObject.getString("name");
+          String value = jsonObject.getString("value");
+          FeatureObject featureObject = new FeatureObject(name, value);
+          indFeatureMap.add(featureObject);
+        }
+        String keyValue = key.replace("_features", "").replace("_", " ");
+        featureMap.put(keyValue, indFeatureMap);
+      }
 
+      for (Map.Entry<String, List<FeatureObject>> entry : featureMap.entrySet()) {
+        //System.out.println(entry.getKey() + "/" + entry.getValue());
+        Log.e("", "main key" + entry.getKey());
+        List<FeatureObject> indfe = entry.getValue();
+        for(FeatureObject indentry : indfe ) {
+          Log.e("", "feature main key" + indentry.getName() + " main value :" + indentry.getValue());
+        }
+      }
+    } catch (JSONException e) {
+      e.printStackTrace();
+    }
   }
   public class ProductDetailImage extends Card{
 

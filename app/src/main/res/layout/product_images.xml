@@ -1,0 +1,18 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:pagedheadlistview="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+    <com.jorgecastilloprz.pagedheadlistview.PagedHeadListView
+        android:id="@+id/pagedHeadListView"
+        android:layout_width="match_parent"
+        android:layout_height="310dp"
+        android:clickable="false"
+        pagedheadlistview:headerHeight="300dp"
+        pagedheadlistview:indicatorType="bottomAligned"
+        pagedheadlistview:disableVerticalTouchOnHeader="false"
+        pagedheadlistview:indicatorBgColor="@color/material_teal"
+        pagedheadlistview:indicatorColor="@color/material_light_teal" />
+
+</LinearLayout>

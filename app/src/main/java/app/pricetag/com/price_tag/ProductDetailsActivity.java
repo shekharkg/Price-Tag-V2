@@ -25,7 +25,6 @@ public class ProductDetailsActivity extends FragmentActivity {
   int productId;
   private ShareActionProvider mShareActionProvider;
   private File photofile;
-  private AdView adView;
   private ActionBar actionBar;
   public static String idUrl, imageUrl, productName;
 
@@ -54,39 +53,7 @@ public class ProductDetailsActivity extends FragmentActivity {
         this.invalidateOptionsMenu();
       }
     }
-    adView = (AdView) findViewById(R.id.adView);
-    AdRequest adRequest = new AdRequest.Builder()
-        .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-        .addTestDevice(getResources().getString(R.string.device_id))
-        .build();
-    adView.loadAd(adRequest);
   }
-  @Override
-  public void onResume() {
-    super.onResume();
-    if (adView != null) {
-      adView.resume();
-    }
-  }
-
-  @Override
-  public void onPause() {
-    if (adView != null) {
-      adView.pause();
-    }
-    super.onPause();
-  }
-
-  /** Called before the activity is destroyed. */
-  @Override
-  public void onDestroy() {
-    // Destroy the AdView.
-    if (adView != null) {
-      adView.destroy();
-    }
-    super.onDestroy();
-  }
-
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
