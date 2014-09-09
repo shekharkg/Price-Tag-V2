@@ -175,15 +175,12 @@ public class ProductDetailsFragment extends Fragment {
         String keyValue = key.replace("_features", "").replace("_", " ");
         featureMap.put(keyValue, indFeatureMap);
       }
-      if(featureLoop == 0){
-        ProductDetailsSpecifications cardProductDetailsSpecifications =
-            new ProductDetailsSpecifications(getActivity(), featureMap);
-        CardHeader header = new CardHeader(getActivity(), R.layout.description);
-        cardProductDetailsSpecifications.addCardHeader(header);
-        cardsDetails.add(cardProductDetailsSpecifications);
-        mCardArrayAdapterDetails.notifyDataSetChanged();
-        featureLoop = 99;
-      }
+       ProductDetailsSpecifications cardProductDetailsSpecifications =
+           new ProductDetailsSpecifications(getActivity(), featureMap);
+       CardHeader header = new CardHeader(getActivity(), R.layout.description);
+       cardProductDetailsSpecifications.addCardHeader(header);
+       cardsDetails.add(cardProductDetailsSpecifications);
+       mCardArrayAdapterDetails.notifyDataSetChanged();
 
     } catch (JSONException e) {
       e.printStackTrace();
@@ -239,25 +236,28 @@ public class ProductDetailsFragment extends Fragment {
     @Override
     public void setupInnerViewElements(final ViewGroup parent, View view) {
       final LinearLayout mySpecs = (LinearLayout) parent.findViewById(R.id.mySpecificationLayout);
-      for (Map.Entry<String, List<FeatureObject>> entry : featureMap.entrySet()) {
-        //System.out.println(entry.getKey() + "/" + entry.getValue());
-        //Log.e("", "main key" + entry.getKey());
-        LayoutInflater layoutInflater = ((ProductDetailsActivity) getActivity()).getLayoutInflater();
-        View tableView = layoutInflater.inflate(R.layout.table_view, null);
-        TextView tableTitle = (TextView) tableView.findViewById(R.id.tableTitle);
-        LinearLayout tableRow = (LinearLayout) tableView.findViewById(R.id.tableRow);
-        tableTitle.setText(entry.getKey());
-        List<FeatureObject> indfe = entry.getValue();
-        for(FeatureObject indentry : indfe ) {
-          //Log.e("", "feature main key" + indentry.getName() + " main value :" + indentry.getValue());
-          View tableRowView = layoutInflater.inflate(R.layout.table_row, null);
-          TextView columnName = (TextView) tableRowView.findViewById(R.id.textName);
-          TextView columnValue = (TextView) tableRowView.findViewById(R.id.textValue);
-          columnName.setText(indentry.getName());
-          columnValue.setText(indentry.getValue());
-          tableRow.addView(tableRowView);
+      if(featureLoop == 0){
+        for (Map.Entry<String, List<FeatureObject>> entry : featureMap.entrySet()) {
+          //System.out.println(entry.getKey() + "/" + entry.getValue());
+          //Log.e("", "main key" + entry.getKey());
+          LayoutInflater layoutInflater = ((ProductDetailsActivity) getActivity()).getLayoutInflater();
+          View tableView = layoutInflater.inflate(R.layout.table_view, null);
+          TextView tableTitle = (TextView) tableView.findViewById(R.id.tableTitle);
+          LinearLayout tableRow = (LinearLayout) tableView.findViewById(R.id.tableRow);
+          tableTitle.setText(entry.getKey());
+          List<FeatureObject> indfe = entry.getValue();
+          for(FeatureObject indentry : indfe ) {
+            //Log.e("", "feature main key" + indentry.getName() + " main value :" + indentry.getValue());
+            View tableRowView = layoutInflater.inflate(R.layout.table_row, null);
+            TextView columnName = (TextView) tableRowView.findViewById(R.id.textName);
+            TextView columnValue = (TextView) tableRowView.findViewById(R.id.textValue);
+            columnName.setText(indentry.getName());
+            columnValue.setText(indentry.getValue());
+            tableRow.addView(tableRowView);
+          }
+          mySpecs.addView(tableView);
         }
-        mySpecs.addView(tableView);
+        featureLoop = 99;
       }
     }
   }
