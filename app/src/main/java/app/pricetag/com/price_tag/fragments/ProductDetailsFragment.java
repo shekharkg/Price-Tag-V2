@@ -7,10 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.HorizontalScrollView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TableLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.jorgecastilloprz.pagedheadlistview.PagedHeadListView;
@@ -19,7 +17,6 @@ import com.jorgecastilloprz.pagedheadlistview.utils.PageTransformerTypes;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -29,16 +26,17 @@ import java.util.TreeMap;
 
 import app.pricetag.com.price_tag.ProductDetailsActivity;
 import app.pricetag.com.price_tag.R;
+import app.pricetag.com.price_tag.adapters.SupplierAdapter;
 import app.pricetag.com.price_tag.asynctask.DetailsHttpASyncTask;
 import app.pricetag.com.price_tag.asynctask.ImageHttpAsyncTask;
+import app.pricetag.com.price_tag.dao.CityWisePriceObject;
 import app.pricetag.com.price_tag.dao.ConnectedToInternetOrNot;
 import app.pricetag.com.price_tag.dao.FeatureObject;
+import app.pricetag.com.price_tag.dao.SupplierObject;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
-import it.gmariotti.cardslib.library.internal.CardGridArrayAdapter;
 import it.gmariotti.cardslib.library.internal.CardHeader;
-import it.gmariotti.cardslib.library.view.CardGridView;
 import it.gmariotti.cardslib.library.view.CardListView;
 
 /**
@@ -122,6 +120,44 @@ public class ProductDetailsFragment extends Fragment {
   public void detailsDao(String productDetails) {
     try {
       JSONObject productJson  = new JSONObject(productDetails);
+
+      String prodCategory = productJson.getJSONObject("products").getString("category");
+      if(prodCategory != "Bikes" && prodCategory != "Cars") {
+        JSONArray supplierDetails = productJson.getJSONObject("suppliers").getJSONArray("supplier_details");
+        List<SupplierObject> supplierList = new ArrayList<SupplierObject>();
+        if(supplierDetails.length() > 0){
+          for(int i=0; i<supplierDetails.length(); i++){
+            JSONObject supplierDetailsJSONObject = supplierDetails.getJSONObject(i);
+            String name = supplierDetailsJSONObject.getString("name");
+            String url = supplierDetailsJSONObject.getString("url");
+            String price = supplierDetailsJSONObject.getString("price");
+            String storeImage = supplierDetailsJSONObject.getString("store_image");
+            String stockInfo = supplierDetailsJSONObject.getString("stock_information");
+            SupplierObject supplierObject = new SupplierObject(name, url, price, storeImage, stockInfo);
+            supplierList.add(supplierObject);
+            //Log.e("Suppliers", "\nname :" + name + "\nurl :" + url + "\nprice :" + price + "\nimage :" + storeImage + "\nStock : " +stockInfo);
+          }
+          ProductSuppliers productSuppliersCard = new ProductSuppliers(getActivity(),supplierList);
+          CardHeader header = new CardHeader(getActivity(), R.layout.seller);
+          productSuppliersCard.addCardHeader(header);
+          cardsDetails.add(productSuppliersCard);
+          cardsDetails.remove(2);
+        }
+      } else {
+        JSONArray cityWisePrice = productJson.getJSONArray("city_wise_price_details");
+        List<CityWisePriceObject> cityWisePriceObjectList = new ArrayList<CityWisePriceObject>();
+        if(cityWisePrice.length() > 0){
+          for(int i=0; i<cityWisePrice.length(); i++){
+            JSONObject cityWiseJSJsonObject = cityWisePrice.getJSONObject(i);
+            String city = cityWiseJSJsonObject.getString("city");
+            String price = cityWiseJSJsonObject.getString("price");
+            String storeUrl = cityWiseJSJsonObject.getString("store_url");
+            CityWisePriceObject cityWisePriceObject = new CityWisePriceObject(city, price, storeUrl);
+            cityWisePriceObjectList.add(cityWisePriceObject);
+            //Log.e("Suppliers", "\ncity :" + city + "\nprice :" + price + "\nstoreUrl :" + storeUrl);
+          }
+        }
+      }
       JSONObject features = productJson.getJSONObject("features").getJSONObject("group_features");
       Map<String, List<FeatureObject>> featureMap = new TreeMap<String, List<FeatureObject>>();
       Iterator keys = features.keys();
@@ -139,12 +175,16 @@ public class ProductDetailsFragment extends Fragment {
         String keyValue = key.replace("_features", "").replace("_", " ");
         featureMap.put(keyValue, indFeatureMap);
       }
-      ProductDetailsSpecifications cardProductDetailsSpecifications = new ProductDetailsSpecifications(getActivity(), featureMap);
-      CardHeader header = new CardHeader(getActivity(), R.layout.description);
-      cardProductDetailsSpecifications.addCardHeader(header);
-      cardsDetails.add(cardProductDetailsSpecifications);
-      cardsDetails.remove(2);
-      mCardArrayAdapterDetails.notifyDataSetChanged();
+      if(featureLoop == 0){
+        ProductDetailsSpecifications cardProductDetailsSpecifications =
+            new ProductDetailsSpecifications(getActivity(), featureMap);
+        CardHeader header = new CardHeader(getActivity(), R.layout.description);
+        cardProductDetailsSpecifications.addCardHeader(header);
+        cardsDetails.add(cardProductDetailsSpecifications);
+        mCardArrayAdapterDetails.notifyDataSetChanged();
+        featureLoop = 99;
+      }
+
     } catch (JSONException e) {
       e.printStackTrace();
     }
@@ -178,6 +218,7 @@ public class ProductDetailsFragment extends Fragment {
       }
     }
   }
+
   protected class Title extends Card{
     public Title(Context context) {
       super(context, R.layout.description);
@@ -198,19 +239,14 @@ public class ProductDetailsFragment extends Fragment {
     @Override
     public void setupInnerViewElements(final ViewGroup parent, View view) {
       final LinearLayout mySpecs = (LinearLayout) parent.findViewById(R.id.mySpecificationLayout);
-
-
-
       for (Map.Entry<String, List<FeatureObject>> entry : featureMap.entrySet()) {
         //System.out.println(entry.getKey() + "/" + entry.getValue());
-        Log.e("", "main key" + entry.getKey());
-
+        //Log.e("", "main key" + entry.getKey());
         LayoutInflater layoutInflater = ((ProductDetailsActivity) getActivity()).getLayoutInflater();
         View tableView = layoutInflater.inflate(R.layout.table_view, null);
         TextView tableTitle = (TextView) tableView.findViewById(R.id.tableTitle);
         LinearLayout tableRow = (LinearLayout) tableView.findViewById(R.id.tableRow);
         tableTitle.setText(entry.getKey());
-
         List<FeatureObject> indfe = entry.getValue();
         for(FeatureObject indentry : indfe ) {
           //Log.e("", "feature main key" + indentry.getName() + " main value :" + indentry.getValue());
@@ -224,6 +260,26 @@ public class ProductDetailsFragment extends Fragment {
         mySpecs.addView(tableView);
       }
     }
+  }
+
+  protected class ProductSuppliers extends Card{
+
+    Context context;
+    List<SupplierObject> supplierList;
+
+    public ProductSuppliers(Context context, List<SupplierObject> supplierList) {
+      super(context,R.layout.card_list_view);
+      this.context = context;
+      this.supplierList = supplierList;
+    }
+    @Override
+    public void setupInnerViewElements(final ViewGroup parent, View view) {
+      ListView supplierListView = (ListView) parent.findViewById(R.id.supplierListView);
+      SupplierAdapter supplierAdapter = new SupplierAdapter(context, supplierList);
+      supplierListView.setAdapter(supplierAdapter);
+      Log.e("SKG","ProductSuppliers");
+    }
+
   }
 
 }

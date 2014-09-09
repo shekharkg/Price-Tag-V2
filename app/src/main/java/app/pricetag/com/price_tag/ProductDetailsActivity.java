@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -34,6 +35,7 @@ public class ProductDetailsActivity extends FragmentActivity {
       productId = intent.getIntExtra("productId",0);
       productName = intent.getStringExtra("productName");
       setTitle(productName);
+      Log.e("ID: ", String.valueOf(productId));
     }
     actionBar = getActionBar();
     actionBar.setIcon(R.drawable.ic_launcher);
