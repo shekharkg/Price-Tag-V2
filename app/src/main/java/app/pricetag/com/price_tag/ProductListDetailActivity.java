@@ -36,7 +36,7 @@ public class ProductListDetailActivity extends Activity {
     sortOrder = "&order_by=popular&limit=25&start=";
     dialogSelectedIndex = 0;
     productListUrl = getResources().getString(R.string.productListUrl) + subCategoryId;
-    getFragmentManager().beginTransaction().add(R.id.content_frame_product_list, new ProductListFragment()).commit();
+    getFragmentManager().beginTransaction().add(R.id.content_frame, new ProductListFragment()).commit();
     actionBar = getActionBar();
     actionBar.setIcon(R.drawable.ic_launcher);
     actionBar.setDisplayHomeAsUpEnabled(true);

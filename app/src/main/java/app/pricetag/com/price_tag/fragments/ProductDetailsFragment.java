@@ -2,26 +2,23 @@ package app.pricetag.com.price_tag.fragments;
 
 import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
-import android.widget.RatingBar;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.jorgecastilloprz.pagedheadlistview.PagedHeadListView;
 import com.jorgecastilloprz.pagedheadlistview.utils.PageTransformerTypes;
-import com.koushikdutta.ion.Ion;
-import com.nhaarman.listviewanimations.swinginadapters.prepared.ScaleInAnimationAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -32,23 +29,30 @@ import app.pricetag.com.price_tag.ProductDetailsActivity;
 import app.pricetag.com.price_tag.R;
 import app.pricetag.com.price_tag.asynctask.DetailsHttpASyncTask;
 import app.pricetag.com.price_tag.asynctask.ImageHttpAsyncTask;
-import app.pricetag.com.price_tag.model.FeatureObject;
+import app.pricetag.com.price_tag.dao.ConnectedToInternetOrNot;
+import app.pricetag.com.price_tag.dao.FeatureObject;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
+import it.gmariotti.cardslib.library.internal.CardGridArrayAdapter;
+import it.gmariotti.cardslib.library.internal.CardHeader;
+import it.gmariotti.cardslib.library.view.CardGridView;
 import it.gmariotti.cardslib.library.view.CardListView;
-import it.gmariotti.cardslib.library.view.CardView;
 
 /**
  * Created by shekhar on 5/9/14.
  */
 public class ProductDetailsFragment extends Fragment {
 
-  private PagedHeadListView mPagedHeadList;
+
   private View rootView;
   public ArrayList<Card> cardsDetails;
   public CardListView listViewDetails;
   public CardArrayAdapter mCardArrayAdapterDetails;
+  ConnectedToInternetOrNot connectedToInternetOrNot;
+  int connected;
+  public static String imageStringUrl;
+  int imageLoop, featureLoop;
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -60,7 +64,6 @@ public class ProductDetailsFragment extends Fragment {
   public void onActivityCreated(Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
     new ImageHttpAsyncTask(this).execute(ProductDetailsActivity.imageUrl);
-    new DetailsHttpASyncTask(this).execute(ProductDetailsActivity.idUrl);
     cardsDetails  = new ArrayList<Card>();
     mCardArrayAdapterDetails = new CardArrayAdapter(getActivity(),cardsDetails);
     listViewDetails = (CardListView) getActivity().findViewById(R.id.card_list);
@@ -69,6 +72,10 @@ public class ProductDetailsFragment extends Fragment {
     card.setInnerLayout(R.layout.loading_view_starting);
     card.setShadow(false);
     cardsDetails.add(card);
+    connectedToInternetOrNot = new ConnectedToInternetOrNot();
+    mCardArrayAdapterDetails.setNotifyOnChange(true);
+    imageLoop = 0;
+    featureLoop = 0;
   }
 
   public void imageDao(String jsonResult) {
@@ -81,14 +88,33 @@ public class ProductDetailsFragment extends Fragment {
       ProductDetailImage imageCard = new ProductDetailImage(getActivity(), imageArray);
       imageCard.setShadow(false);
       cardsDetails.add(imageCard);
+      Title cardDescription = new Title(getActivity());
+      cardsDetails.add(cardDescription);
+      Card card = new Card(getActivity());
+      card.setInnerLayout(R.layout.loading_view_card);
+      cardsDetails.remove(0);
+      cardsDetails.add(card);
+      mCardArrayAdapterDetails.notifyDataSetChanged();
+      new DetailsHttpASyncTask(this).execute(ProductDetailsActivity.idUrl);
     }catch (Exception e){
+      Card card = new Card(getActivity());
+      card.setInnerLayout(R.layout.retry_loading);
+      card.setOnClickListener(new Card.OnCardClickListener() {
+        @Override
+        public void onClick(Card card, View view) {
+          connected = connectedToInternetOrNot.ConnectedToInternetOrNot(getActivity());
+          if (connected == 1) {
+            getFragmentManager().beginTransaction().replace(R.id.content_frame, new ProductDetailsFragment()).commit();
+            Crouton.cancelAllCroutons();
+          }
+        }
+      });
+      cardsDetails.remove(0);
+      cardsDetails.add(card);
+      mCardArrayAdapterDetails.notifyDataSetChanged();
       e.printStackTrace();
     }
-    Title cardDescriptipon = new Title(getActivity());
-    cardsDetails.add(cardDescriptipon);
-    cardsDetails.remove(0);
-    mCardArrayAdapterDetails.setNotifyOnChange(true);
-    mCardArrayAdapterDetails.notifyDataSetChanged();
+
   }
 
   public void detailsDao(String productDetails) {
@@ -111,56 +137,53 @@ public class ProductDetailsFragment extends Fragment {
         String keyValue = key.replace("_features", "").replace("_", " ");
         featureMap.put(keyValue, indFeatureMap);
       }
+      ProductDetailsSpecifications cardProductDetailsSpecifications = new ProductDetailsSpecifications(getActivity());
+      cardsDetails.add(cardProductDetailsSpecifications);
+      cardsDetails.remove(2);
+      mCardArrayAdapterDetails.notifyDataSetChanged();
 
       for (Map.Entry<String, List<FeatureObject>> entry : featureMap.entrySet()) {
         //System.out.println(entry.getKey() + "/" + entry.getValue());
-        Log.e("", "main key" + entry.getKey());
+        //Log.e("", "main key" + entry.getKey());
         List<FeatureObject> indfe = entry.getValue();
         for(FeatureObject indentry : indfe ) {
-          Log.e("", "feature main key" + indentry.getName() + " main value :" + indentry.getValue());
+          //Log.e("", "feature main key" + indentry.getName() + " main value :" + indentry.getValue());
         }
       }
     } catch (JSONException e) {
       e.printStackTrace();
     }
   }
-  public class ProductDetailImage extends Card{
 
+  protected class ProductDetailImage extends Card{
     JSONArray imageArray;
     public ProductDetailImage(Context context, JSONArray imageArray) {
-      super(context, R.layout.product_specifications);
+      super(context, R.layout.product_images);
       this.imageArray = imageArray;
     }
-
-
     @Override
     public void setupInnerViewElements(final ViewGroup parent, View view) {
-
       //Retrieve elements
-      mPagedHeadList = (PagedHeadListView) parent.findViewById(R.id.pagedHeadListView);
-
-      for(int i=0; i<imageArray.length(); i++){
-        JSONObject imageObject = null;
-        try {
-          imageObject = imageArray.getJSONObject(i);
-          String imageStringUrl = imageObject.getString("large_image");
-          mPagedHeadList.addFragmentToHeader(new ImageHeaderFragment(imageStringUrl));
-        } catch (JSONException e) {
-          e.printStackTrace();
+      PagedHeadListView mPagedHeadList = (PagedHeadListView) parent.findViewById(R.id.pagedHeadListView);
+      if (imageLoop == 0) {
+      for(int i=0; i<imageArray.length(); i++) {
+          JSONObject imageObject = null;
+          try {
+            imageObject = imageArray.getJSONObject(i);
+            imageStringUrl = imageObject.getString("large_image");
+            mPagedHeadList.addFragmentToHeader(new ImageHeaderFragment(this.getContext()));
+          } catch (JSONException e) {
+            e.printStackTrace();
+          }
         }
+        mPagedHeadList.setHeaderOffScreenPageLimit(imageArray.length() - 1);
+        mPagedHeadList.setHeaderPageTransformer(PageTransformerTypes.ACCORDION);
+        mPagedHeadList.setAdapter(null);
+        imageLoop = 99;
       }
-      mPagedHeadList.setHeaderOffScreenPageLimit(imageArray.length() - 1);
-      mPagedHeadList.setHeaderPageTransformer(PageTransformerTypes.ACCORDION);
-      mPagedHeadList.setAdapter(null);
-      setOnClickListener(new OnCardClickListener() {
-        @Override
-        public void onClick(Card card, View view) {
-
-        }
-      });
     }
   }
-  public class Title extends Card{
+  protected class Title extends Card{
     public Title(Context context) {
       super(context, R.layout.description);
     }
@@ -168,6 +191,25 @@ public class ProductDetailsFragment extends Fragment {
     public void setupInnerViewElements(final ViewGroup parent, View view) {
       TextView textView = (TextView) parent.findViewById(R.id.description);
       textView.setText(ProductDetailsActivity.productName);
+    }
+  }
+
+  protected class ProductDetailsSpecifications extends Card{
+    public ProductDetailsSpecifications(Context context) {
+      super(context, R.layout.product_specifications);
+    }
+    @Override
+    public void setupInnerViewElements(final ViewGroup parent, View view) {
+      final LinearLayout myGallery = (LinearLayout) parent.findViewById(R.id.mySpecificationLayout);
+
+      for(int z=0; z<5; z++){
+        ImageView imageView = new ImageView(getContext());
+        imageView.setLayoutParams(new ViewGroup.LayoutParams(270, 270));
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        int draw = R.drawable.cameras;
+        imageView.setImageResource(draw);
+        myGallery.addView(imageView);
+      }
     }
   }
 

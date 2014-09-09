@@ -102,7 +102,7 @@ public class SearchCategoryFragment extends Fragment {
               if(connected == 1) {
                 SearchCategoryFragment searchCategoryFragment = new SearchCategoryFragment();
                 FragmentTransaction transaction = SearchActivity.manager.beginTransaction();
-                transaction.replace(R.id.content_frame_product_list, searchCategoryFragment,"searchCategoryFragment");
+                transaction.replace(R.id.content_frame, searchCategoryFragment,"searchCategoryFragment");
                 transaction.commit();
                 Crouton.cancelAllCroutons();
               }
@@ -149,7 +149,7 @@ public class SearchCategoryFragment extends Fragment {
             resultCategoryListName = resultCategoryListName.replaceAll(" " , "+");
             SearchActivity.searchKey = SearchActivity.queryString + "&category=" + resultCategoryListName;
             getFragmentManager().beginTransaction()
-                .replace(R.id.content_frame_product_list, new SearchProductListFragment()).commit();
+                .replace(R.id.content_frame, new SearchProductListFragment()).commit();
             SearchActivity.imm.hideSoftInputFromWindow(SearchActivity.mSearchView.getWindowToken(), 0);
             Crouton.cancelAllCroutons();
           }

@@ -21,8 +21,8 @@ public class ImageHeaderFragment extends Fragment {
   private View rootView;
   private String imageStringUrl;
 
-  public ImageHeaderFragment(String imageStringUrl) {
-    this.imageStringUrl = imageStringUrl;
+  public ImageHeaderFragment(Context context) {
+    this.imageStringUrl = ProductDetailsFragment.imageStringUrl;
   }
 
   @Override

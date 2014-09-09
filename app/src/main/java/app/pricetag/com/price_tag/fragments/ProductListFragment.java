@@ -116,7 +116,7 @@ public class ProductListFragment extends Fragment {
             if (connected == 1) {
               ProductListDetailActivity.sortOrder = "&" + sortOrderName[position] + "&limit=25&start=";
               ProductListDetailActivity.dialogSelectedIndex = position;
-              activity.getFragmentManager().beginTransaction().replace(R.id.content_frame_product_list, new ProductListFragment()).commit();
+              activity.getFragmentManager().beginTransaction().replace(R.id.content_frame, new ProductListFragment()).commit();
               rightLowerButton.detach();
               Crouton.cancelAllCroutons();
             }
@@ -181,7 +181,7 @@ public class ProductListFragment extends Fragment {
               if (cards.size() < 25) {
                 Fragment fragment = new ProductListFragment();
                 FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content_frame_product_list, fragment).commit();
+                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
               } else {
                 cards.remove(start - 25);
                 start = start - 25;

@@ -57,7 +57,7 @@ public class SearchActivity extends Activity implements SearchView.OnQueryTextLi
     Crouton.cancelAllCroutons();
     if (fragmentCount == 1) {
       getFragmentManager().beginTransaction()
-          .replace(R.id.content_frame_product_list,new SearchCategoryFragment()).commit();
+          .replace(R.id.content_frame,new SearchCategoryFragment()).commit();
       fragmentCount = 0;
     } else {
       super.onBackPressed();
@@ -94,7 +94,7 @@ public class SearchActivity extends Activity implements SearchView.OnQueryTextLi
         Crouton.cancelAllCroutons();
         if (fragmentCount == 1) {
           getFragmentManager().beginTransaction()
-              .replace(R.id.content_frame_product_list,new SearchCategoryFragment()).commit();
+              .replace(R.id.content_frame,new SearchCategoryFragment()).commit();
           fragmentCount = 0;
         } else {
           finish();
@@ -110,7 +110,7 @@ public class SearchActivity extends Activity implements SearchView.OnQueryTextLi
 
   public boolean onQueryTextSubmit(String query) {
     getFragmentManager().beginTransaction()
-        .replace(R.id.content_frame_product_list, new SearchCategoryFragment()).commit();
+        .replace(R.id.content_frame, new SearchCategoryFragment()).commit();
     queryString = query.replaceAll(" ", "+");
     imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
     imm.hideSoftInputFromWindow(mSearchView.getWindowToken(), 0);

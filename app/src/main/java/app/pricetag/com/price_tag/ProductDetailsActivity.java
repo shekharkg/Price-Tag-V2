@@ -9,10 +9,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ShareActionProvider;
 
-
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-
 import java.io.File;
 
 import app.pricetag.com.price_tag.fragments.ProductDetailsFragment;
@@ -47,7 +43,7 @@ public class ProductDetailsActivity extends FragmentActivity {
     imageUrl = getResources().getString(R.string.product_image);
     idUrl = idUrl + productId;
     imageUrl = imageUrl + productId;
-    getFragmentManager().beginTransaction().replace(R.id.content_frame_product_list,new ProductDetailsFragment()).commit();
+    getFragmentManager().beginTransaction().replace(R.id.content_frame,new ProductDetailsFragment()).commit();
     if (photofile==null){
       if (mShareActionProvider != null) {
         this.invalidateOptionsMenu();

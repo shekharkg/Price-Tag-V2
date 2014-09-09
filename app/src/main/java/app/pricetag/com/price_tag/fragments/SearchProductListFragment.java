@@ -128,7 +128,7 @@ public class SearchProductListFragment extends Fragment {
               if (cards.size() < 25) {
                 SearchCategoryFragment searchCategoryFragment = new SearchCategoryFragment();
                 FragmentTransaction transaction = SearchActivity.manager.beginTransaction();
-                transaction.replace(R.id.content_frame_product_list, searchCategoryFragment,"searchCategoryFragment");
+                transaction.replace(R.id.content_frame, searchCategoryFragment,"searchCategoryFragment");
                 transaction.commit();
               } else {
                 cards.remove(start - 25);
