@@ -72,6 +72,7 @@ public class ProductListFragment extends Fragment {
     super.onActivityCreated(savedInstanceState);
     activity = getActivity();
 
+
     cards  = new ArrayList<Card>();
     mCardArrayAdapter = new CardArrayAdapter(context,cards);
     animCardArrayAdapter = new ScaleInAnimationAdapter(mCardArrayAdapter);

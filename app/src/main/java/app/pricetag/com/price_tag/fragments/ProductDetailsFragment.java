@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.jorgecastilloprz.pagedheadlistview.PagedHeadListView;
@@ -18,6 +19,7 @@ import com.jorgecastilloprz.pagedheadlistview.utils.PageTransformerTypes;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -137,19 +139,12 @@ public class ProductDetailsFragment extends Fragment {
         String keyValue = key.replace("_features", "").replace("_", " ");
         featureMap.put(keyValue, indFeatureMap);
       }
-      ProductDetailsSpecifications cardProductDetailsSpecifications = new ProductDetailsSpecifications(getActivity());
+      ProductDetailsSpecifications cardProductDetailsSpecifications = new ProductDetailsSpecifications(getActivity(), featureMap);
+      CardHeader header = new CardHeader(getActivity(), R.layout.description);
+      cardProductDetailsSpecifications.addCardHeader(header);
       cardsDetails.add(cardProductDetailsSpecifications);
       cardsDetails.remove(2);
       mCardArrayAdapterDetails.notifyDataSetChanged();
-
-      for (Map.Entry<String, List<FeatureObject>> entry : featureMap.entrySet()) {
-        //System.out.println(entry.getKey() + "/" + entry.getValue());
-        //Log.e("", "main key" + entry.getKey());
-        List<FeatureObject> indfe = entry.getValue();
-        for(FeatureObject indentry : indfe ) {
-          //Log.e("", "feature main key" + indentry.getName() + " main value :" + indentry.getValue());
-        }
-      }
     } catch (JSONException e) {
       e.printStackTrace();
     }
@@ -195,20 +190,38 @@ public class ProductDetailsFragment extends Fragment {
   }
 
   protected class ProductDetailsSpecifications extends Card{
-    public ProductDetailsSpecifications(Context context) {
+    Map<String, List<FeatureObject>> featureMap;
+    public ProductDetailsSpecifications(Context context, Map<String, List<FeatureObject>> featureMap) {
       super(context, R.layout.product_specifications);
+      this.featureMap = featureMap;
     }
     @Override
     public void setupInnerViewElements(final ViewGroup parent, View view) {
-      final LinearLayout myGallery = (LinearLayout) parent.findViewById(R.id.mySpecificationLayout);
+      final LinearLayout mySpecs = (LinearLayout) parent.findViewById(R.id.mySpecificationLayout);
 
-      for(int z=0; z<5; z++){
-        ImageView imageView = new ImageView(getContext());
-        imageView.setLayoutParams(new ViewGroup.LayoutParams(270, 270));
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        int draw = R.drawable.cameras;
-        imageView.setImageResource(draw);
-        myGallery.addView(imageView);
+
+
+      for (Map.Entry<String, List<FeatureObject>> entry : featureMap.entrySet()) {
+        //System.out.println(entry.getKey() + "/" + entry.getValue());
+        Log.e("", "main key" + entry.getKey());
+
+        LayoutInflater layoutInflater = ((ProductDetailsActivity) getActivity()).getLayoutInflater();
+        View tableView = layoutInflater.inflate(R.layout.table_view, null);
+        TextView tableTitle = (TextView) tableView.findViewById(R.id.tableTitle);
+        LinearLayout tableRow = (LinearLayout) tableView.findViewById(R.id.tableRow);
+        tableTitle.setText(entry.getKey());
+
+        List<FeatureObject> indfe = entry.getValue();
+        for(FeatureObject indentry : indfe ) {
+          //Log.e("", "feature main key" + indentry.getName() + " main value :" + indentry.getValue());
+          View tableRowView = layoutInflater.inflate(R.layout.table_row, null);
+          TextView columnName = (TextView) tableRowView.findViewById(R.id.textName);
+          TextView columnValue = (TextView) tableRowView.findViewById(R.id.textValue);
+          columnName.setText(indentry.getName());
+          columnValue.setText(indentry.getValue());
+          tableRow.addView(tableRowView);
+        }
+        mySpecs.addView(tableView);
       }
     }
   }
