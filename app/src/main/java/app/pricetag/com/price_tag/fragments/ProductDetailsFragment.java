@@ -52,7 +52,8 @@ public class ProductDetailsFragment extends Fragment {
   ConnectedToInternetOrNot connectedToInternetOrNot;
   int connected;
   public static String imageStringUrl;
-  int imageLoop, featureLoop;
+  int imageLoop, featureLoop, sellerLoop;
+  ProductDetailsFragment fragment;
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -68,6 +69,7 @@ public class ProductDetailsFragment extends Fragment {
     mCardArrayAdapterDetails = new CardArrayAdapter(getActivity(),cardsDetails);
     listViewDetails = (CardListView) getActivity().findViewById(R.id.card_list);
     listViewDetails.setAdapter(mCardArrayAdapterDetails);
+    fragment = this;
     Card card = new Card(getActivity());
     card.setInnerLayout(R.layout.loading_view_starting);
     card.setShadow(false);
@@ -76,6 +78,7 @@ public class ProductDetailsFragment extends Fragment {
     mCardArrayAdapterDetails.setNotifyOnChange(true);
     imageLoop = 0;
     featureLoop = 0;
+    sellerLoop = 0;
   }
 
   public void imageDao(String jsonResult) {
@@ -236,6 +239,9 @@ public class ProductDetailsFragment extends Fragment {
     @Override
     public void setupInnerViewElements(final ViewGroup parent, View view) {
       final LinearLayout mySpecs = (LinearLayout) parent.findViewById(R.id.mySpecificationLayout);
+      int child = mySpecs.getChildCount();
+      if (child == 0)
+        featureLoop = 0;
       if(featureLoop == 0){
         for (Map.Entry<String, List<FeatureObject>> entry : featureMap.entrySet()) {
           //System.out.println(entry.getKey() + "/" + entry.getValue());
@@ -274,10 +280,16 @@ public class ProductDetailsFragment extends Fragment {
     }
     @Override
     public void setupInnerViewElements(final ViewGroup parent, View view) {
-      ListView supplierListView = (ListView) parent.findViewById(R.id.supplierListView);
-      SupplierAdapter supplierAdapter = new SupplierAdapter(context, supplierList);
-      supplierListView.setAdapter(supplierAdapter);
-      Log.e("SKG","ProductSuppliers");
+      if(sellerLoop == 0){
+        ListView supplierListView = (ListView) parent.findViewById(R.id.supplierListView);
+        SupplierAdapter supplierAdapter = new SupplierAdapter(context, supplierList);
+        supplierListView.setAdapter(supplierAdapter);
+        int height = supplierList.size();
+        height = (height*160) + 25;
+        view.setMinimumHeight(height);
+        Log.e("height", String.valueOf(height));
+        sellerLoop = 99;
+      }
     }
 
   }

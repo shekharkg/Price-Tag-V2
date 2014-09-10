@@ -59,8 +59,8 @@ public class SupplierAdapter extends BaseAdapter {
     TextView stockTextView = (TextView) row.findViewById(R.id.textView6);
     Button buyButton = (Button) row.findViewById(R.id.button);
     Ion.with(imageView).placeholder(R.drawable.ic_launcher).error(R.drawable.ic_launcher).load(supplierList.get(position).getStoreImage());
-    titleTextView.setText(supplierList.get(position).getName());
-    stockTextView.setText(" : " + supplierList.get(position).getStockInfo());
+    titleTextView.setText(supplierList.get(position).getName() + " : ");
+    stockTextView.setText(supplierList.get(position).getStockInfo());
     priceTextView.setText("Rs. " + supplierList.get(position).getPrice());
     buyButton.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -69,8 +69,6 @@ public class SupplierAdapter extends BaseAdapter {
         Toast.makeText(context,siteUrl,Toast.LENGTH_SHORT).show();
       }
     });
-    Log.e("Data: ",  supplierList.get(position).getName() + supplierList.get(position).getPrice());
-    Log.e("SKG","SupplierAdapter");
     return row;
   }
 }
