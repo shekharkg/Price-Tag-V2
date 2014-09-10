@@ -1,5 +1,6 @@
 package app.pricetag.com.price_tag.fragments;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
@@ -7,12 +8,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jorgecastilloprz.pagedheadlistview.PagedHeadListView;
 import com.jorgecastilloprz.pagedheadlistview.utils.PageTransformerTypes;
+import com.koushikdutta.ion.Ion;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,7 +31,6 @@ import java.util.TreeMap;
 
 import app.pricetag.com.price_tag.ProductDetailsActivity;
 import app.pricetag.com.price_tag.R;
-import app.pricetag.com.price_tag.adapters.SupplierAdapter;
 import app.pricetag.com.price_tag.asynctask.DetailsHttpASyncTask;
 import app.pricetag.com.price_tag.asynctask.ImageHttpAsyncTask;
 import app.pricetag.com.price_tag.dao.CityWisePriceObject;
@@ -86,7 +90,7 @@ public class ProductDetailsFragment extends Fragment {
     JSONObject jsonObject = null;
     try{
       jsonObject = new JSONObject(jsonResult);
-      Log.e("IMAGE", jsonResult);
+//      Log.e("IMAGE", jsonResult);
       JSONArray imageArray = jsonObject.getJSONArray("images");
       ProductDetailImage imageCard = new ProductDetailImage(getActivity(), imageArray);
       imageCard.setShadow(false);
@@ -123,9 +127,12 @@ public class ProductDetailsFragment extends Fragment {
   public void detailsDao(String productDetails) {
     try {
       JSONObject productJson  = new JSONObject(productDetails);
-
       String prodCategory = productJson.getJSONObject("products").getString("category");
-      if(prodCategory != "Bikes" && prodCategory != "Cars") {
+      prodCategory = prodCategory.replace(":","").replace(" ","");
+      String bikes = "Bikes";
+      String cars = "Cars";
+      if(!prodCategory.equals(bikes) && !prodCategory.equals(cars)) {
+        Log.e("Category If:", "+" + prodCategory + "+");
         JSONArray supplierDetails = productJson.getJSONObject("suppliers").getJSONArray("supplier_details");
         List<SupplierObject> supplierList = new ArrayList<SupplierObject>();
         if(supplierDetails.length() > 0){
@@ -147,6 +154,7 @@ public class ProductDetailsFragment extends Fragment {
           cardsDetails.remove(2);
         }
       } else {
+        Log.e("Category else:", "+" + prodCategory + "+");
         JSONArray cityWisePrice = productJson.getJSONArray("city_wise_price_details");
         List<CityWisePriceObject> cityWisePriceObjectList = new ArrayList<CityWisePriceObject>();
         if(cityWisePrice.length() > 0){
@@ -159,6 +167,13 @@ public class ProductDetailsFragment extends Fragment {
             cityWisePriceObjectList.add(cityWisePriceObject);
             //Log.e("Suppliers", "\ncity :" + city + "\nprice :" + price + "\nstoreUrl :" + storeUrl);
           }
+          //================================================================================================
+      //****************************************************************************************************
+          ProductCity productCityCard = new ProductCity(getActivity(),cityWisePriceObjectList);
+          CardHeader header = new CardHeader(getActivity(), R.layout.city_wise);
+          productCityCard.addCardHeader(header);
+          cardsDetails.add(productCityCard);
+          cardsDetails.remove(2);
         }
       }
       JSONObject features = productJson.getJSONObject("features").getJSONObject("group_features");
@@ -186,6 +201,26 @@ public class ProductDetailsFragment extends Fragment {
        mCardArrayAdapterDetails.notifyDataSetChanged();
 
     } catch (JSONException e) {
+      Card card = new Card(getActivity());
+      card.setInnerLayout(R.layout.retry_loading);
+      card.setOnClickListener(new Card.OnCardClickListener() {
+        @Override
+        public void onClick(Card card, View view) {
+          connected = connectedToInternetOrNot.ConnectedToInternetOrNot(getActivity());
+          if (connected == 1) {
+            new DetailsHttpASyncTask(fragment).execute(ProductDetailsActivity.idUrl);
+            Crouton.cancelAllCroutons();
+            Card cardR = new Card(getActivity());
+            cardR.setInnerLayout(R.layout.loading_view_card);
+            cardsDetails.remove(2);
+            cardsDetails.add(cardR);
+            mCardArrayAdapterDetails.notifyDataSetChanged();
+          }
+        }
+      });
+      cardsDetails.remove(2);
+      cardsDetails.add(card);
+      mCardArrayAdapterDetails.notifyDataSetChanged();
       e.printStackTrace();
     }
   }
@@ -280,14 +315,70 @@ public class ProductDetailsFragment extends Fragment {
     }
     @Override
     public void setupInnerViewElements(final ViewGroup parent, View view) {
+      final LinearLayout mySeller = (LinearLayout) parent.findViewById(R.id.sellerDetails);
       if(sellerLoop == 0){
-        ListView supplierListView = (ListView) parent.findViewById(R.id.supplierListView);
-        SupplierAdapter supplierAdapter = new SupplierAdapter(context, supplierList);
-        supplierListView.setAdapter(supplierAdapter);
-        int height = supplierList.size();
-        height = (height*160) + 25;
-        view.setMinimumHeight(height);
-        Log.e("height", String.valueOf(height));
+        LayoutInflater layoutInflater = ((ProductDetailsActivity) getActivity()).getLayoutInflater();
+
+        for(int position=0; position<supplierList.size(); position++){
+          View sellerView = layoutInflater.inflate(R.layout.supplier_single_row,null);
+          ImageView imageView = (ImageView) sellerView.findViewById(R.id.imageView);
+          TextView priceTextView = (TextView) sellerView.findViewById(R.id.textView3);
+          TextView titleTextView = (TextView) sellerView.findViewById(R.id.textView4);
+          TextView stockTextView = (TextView) sellerView.findViewById(R.id.textView6);
+          Button buyButton = (Button) sellerView.findViewById(R.id.button);
+          Ion.with(imageView).placeholder(R.drawable.ic_launcher).error(R.drawable.ic_launcher).load(supplierList.get(position).getStoreImage());
+          titleTextView.setText(supplierList.get(position).getName() + " : ");
+          stockTextView.setText(supplierList.get(position).getStockInfo());
+          priceTextView.setText("Rs. " + supplierList.get(position).getPrice());
+          final int finalPosition = position;
+          buyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              String siteUrl = supplierList.get(finalPosition).getUrl();
+              Toast.makeText(context, siteUrl, Toast.LENGTH_SHORT).show();
+            }
+          });
+          mySeller.addView(sellerView);
+        }
+        sellerLoop = 99;
+      }
+    }
+
+  }
+
+  protected class ProductCity extends Card{
+
+    Context context;
+    List<CityWisePriceObject> cityWisePriceObjectList;
+
+    public ProductCity(Context context, List<CityWisePriceObject> cityWisePriceObjectList) {
+      super(context, R.layout.card_list_view);
+      this.context = context;
+      this.cityWisePriceObjectList = cityWisePriceObjectList;
+    }
+
+    @Override
+    public void setupInnerViewElements(final ViewGroup parent, View view) {
+      final LinearLayout mySellerCity = (LinearLayout) parent.findViewById(R.id.sellerDetails);
+      if(sellerLoop == 0){
+        LayoutInflater layoutInflater = ((ProductDetailsActivity) getActivity()).getLayoutInflater();
+        for(int position=0; position<cityWisePriceObjectList.size(); position++){
+          View sellerCityView = layoutInflater.inflate(R.layout.supplier_city_single_row,null);
+          TextView cityTextView = (TextView) sellerCityView.findViewById(R.id.textView3);
+          TextView priceTextView = (TextView) sellerCityView.findViewById(R.id.textView4);
+          Button buyButton = (Button) sellerCityView.findViewById(R.id.button);
+          cityTextView.setText(cityWisePriceObjectList.get(position).getCity());
+          priceTextView.setText("Rs. " + cityWisePriceObjectList.get(position).getPrice());
+          final int finalPosition = position;
+          buyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              String siteUrl = cityWisePriceObjectList.get(finalPosition).getStoreUrl();
+              Toast.makeText(context, siteUrl, Toast.LENGTH_SHORT).show();
+            }
+          });
+          mySellerCity.addView(sellerCityView);
+        }
         sellerLoop = 99;
       }
     }
