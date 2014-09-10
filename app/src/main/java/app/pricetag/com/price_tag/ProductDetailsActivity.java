@@ -13,6 +13,7 @@ import android.widget.ShareActionProvider;
 import java.io.File;
 
 import app.pricetag.com.price_tag.fragments.ProductDetailsFragment;
+import it.gmariotti.cardslib.library.utils.BitmapUtils;
 
 /**
  * Created by shekhar on 5/9/14.
@@ -21,9 +22,9 @@ public class ProductDetailsActivity extends FragmentActivity {
 
   int productId;
   private ShareActionProvider mShareActionProvider;
-  private File photofile;
   private ActionBar actionBar;
   public static String idUrl, imageUrl, productName;
+  public static String stringShare;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +47,8 @@ public class ProductDetailsActivity extends FragmentActivity {
     idUrl = idUrl + productId;
     imageUrl = imageUrl + productId;
     getFragmentManager().beginTransaction().replace(R.id.content_frame,new ProductDetailsFragment()).commit();
-    if (photofile==null){
-      if (mShareActionProvider != null) {
-        this.invalidateOptionsMenu();
-      }
-    }
+    stringShare =  "Compare price of " + productName
+        + " across different sites.\n \n \nGet the app at Play Store \n\n https://play.google.com/store/apps/details?id=com.pricetag.app";
   }
 
   @Override
@@ -82,28 +80,9 @@ public class ProductDetailsActivity extends FragmentActivity {
   }
 
   private Intent getShareIntent(){
-//    if (cardView!=null){
-//      photofile = BitmapUtils.createFileFromBitmap(cardView.createBitmap());
-//      if (photofile!=null){
-//        return BitmapUtils.createIntentFromImage(photofile);
-//      }else{
-//        return getDefaultIntent();
-//      }
-//    }else{
-      return getDefaultIntent();
-//    }
-  }
-
-
-
-  /** Defines a default (dummy) share intent to initialze the action provider.
-   * However, as soon as the actual content to be used in the intent
-   * is known or changes, you must update the share intent by again calling
-   * mShareActionProvider.setShareIntent()
-   */
-  private Intent getDefaultIntent() {
-    Intent intent = new Intent(Intent.ACTION_SEND);
-    intent.setType("image/*");
-    return intent;
+    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+    shareIntent.setType("text/plain");
+    shareIntent.putExtra(Intent.EXTRA_TEXT, stringShare);
+    return shareIntent;
   }
 }

@@ -18,7 +18,7 @@
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="45dp"
+            android:layout_height="25dp"
             android:text="City"
             android:id="@+id/textView3"
             android:textColor="@color/material_teal"
@@ -33,12 +33,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Price"
-            android:layout_marginTop="25dp"
             android:layout_marginLeft="25dp"
             android:textColor="@color/material_teal"
             android:textSize="18sp"
             android:id="@+id/textView4"
-            android:layout_alignBottom="@+id/textView3"/>
+            android:layout_below="@+id/textView3"/>
 
         <Button
             android:layout_width="110dp"

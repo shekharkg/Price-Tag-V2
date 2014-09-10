@@ -1,8 +1,9 @@
 package app.pricetag.com.price_tag.fragments;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,9 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.jorgecastilloprz.pagedheadlistview.PagedHeadListView;
 import com.jorgecastilloprz.pagedheadlistview.utils.PageTransformerTypes;
@@ -47,7 +46,6 @@ import it.gmariotti.cardslib.library.view.CardListView;
  * Created by shekhar on 5/9/14.
  */
 public class ProductDetailsFragment extends Fragment {
-
 
   private View rootView;
   public ArrayList<Card> cardsDetails;
@@ -127,78 +125,93 @@ public class ProductDetailsFragment extends Fragment {
   public void detailsDao(String productDetails) {
     try {
       JSONObject productJson  = new JSONObject(productDetails);
-      String prodCategory = productJson.getJSONObject("products").getString("category");
-      prodCategory = prodCategory.replace(":","").replace(" ","");
-      String bikes = "Bikes";
-      String cars = "Cars";
-      if(!prodCategory.equals(bikes) && !prodCategory.equals(cars)) {
-        Log.e("Category If:", "+" + prodCategory + "+");
-        JSONArray supplierDetails = productJson.getJSONObject("suppliers").getJSONArray("supplier_details");
-        List<SupplierObject> supplierList = new ArrayList<SupplierObject>();
-        if(supplierDetails.length() > 0){
-          for(int i=0; i<supplierDetails.length(); i++){
-            JSONObject supplierDetailsJSONObject = supplierDetails.getJSONObject(i);
-            String name = supplierDetailsJSONObject.getString("name");
-            String url = supplierDetailsJSONObject.getString("url");
-            String price = supplierDetailsJSONObject.getString("price");
-            String storeImage = supplierDetailsJSONObject.getString("store_image");
-            String stockInfo = supplierDetailsJSONObject.getString("stock_information");
-            SupplierObject supplierObject = new SupplierObject(name, url, price, storeImage, stockInfo);
-            supplierList.add(supplierObject);
-            //Log.e("Suppliers", "\nname :" + name + "\nurl :" + url + "\nprice :" + price + "\nimage :" + storeImage + "\nStock : " +stockInfo);
+
+      try{
+        String prodCategory = productJson.getJSONObject("products").getString("category");
+        prodCategory = prodCategory.replace(":","").replace(" ","");
+        String bikes = "Bikes";
+        String cars = "Cars";
+        if(!prodCategory.equals(bikes) && !prodCategory.equals(cars)) {
+          Log.e("Category If:", "+" + prodCategory + "+");
+          JSONArray supplierDetails = productJson.getJSONObject("suppliers").getJSONArray("supplier_details");
+          List<SupplierObject> supplierList = new ArrayList<SupplierObject>();
+          if(supplierDetails.length() > 0){
+            for(int i=0; i<supplierDetails.length(); i++){
+              JSONObject supplierDetailsJSONObject = supplierDetails.getJSONObject(i);
+              String name = supplierDetailsJSONObject.getString("name");
+              String url = supplierDetailsJSONObject.getString("url");
+              String price = supplierDetailsJSONObject.getString("price");
+              String storeImage = supplierDetailsJSONObject.getString("store_image");
+              String stockInfo = supplierDetailsJSONObject.getString("stock_information");
+              SupplierObject supplierObject = new SupplierObject(name, url, price, storeImage, stockInfo);
+              supplierList.add(supplierObject);
+              //Log.e("Suppliers", "\nname :" + name + "\nurl :" + url + "\nprice :" + price + "\nimage :" + storeImage + "\nStock : " +stockInfo);
+            }
+            ProductSuppliers productSuppliersCard = new ProductSuppliers(getActivity(),supplierList);
+            CardHeader header = new CardHeader(getActivity(), R.layout.seller);
+            productSuppliersCard.addCardHeader(header);
+            cardsDetails.add(productSuppliersCard);
+            cardsDetails.remove(2);
+            mCardArrayAdapterDetails.notifyDataSetChanged();
           }
-          ProductSuppliers productSuppliersCard = new ProductSuppliers(getActivity(),supplierList);
-          CardHeader header = new CardHeader(getActivity(), R.layout.seller);
-          productSuppliersCard.addCardHeader(header);
-          cardsDetails.add(productSuppliersCard);
-          cardsDetails.remove(2);
+        } else {
+          Log.e("Category else:", "+" + prodCategory + "+");
+          JSONArray cityWisePrice = productJson.getJSONArray("city_wise_price_details");
+          List<CityWisePriceObject> cityWisePriceObjectList = new ArrayList<CityWisePriceObject>();
+          if(cityWisePrice.length() > 0){
+            for(int i=0; i<cityWisePrice.length(); i++){
+              JSONObject cityWiseJSJsonObject = cityWisePrice.getJSONObject(i);
+              String city = cityWiseJSJsonObject.getString("city");
+              String price = cityWiseJSJsonObject.getString("price");
+              String storeUrl = cityWiseJSJsonObject.getString("store_url");
+              CityWisePriceObject cityWisePriceObject = new CityWisePriceObject(city, price, storeUrl);
+              cityWisePriceObjectList.add(cityWisePriceObject);
+              //Log.e("Suppliers", "\ncity :" + city + "\nprice :" + price + "\nstoreUrl :" + storeUrl);
+            }
+            ProductCity productCityCard = new ProductCity(getActivity(),cityWisePriceObjectList);
+            CardHeader header = new CardHeader(getActivity(), R.layout.city_wise);
+            productCityCard.addCardHeader(header);
+            cardsDetails.add(productCityCard);
+            cardsDetails.remove(2);
+            mCardArrayAdapterDetails.notifyDataSetChanged();
+          }
         }
-      } else {
-        Log.e("Category else:", "+" + prodCategory + "+");
-        JSONArray cityWisePrice = productJson.getJSONArray("city_wise_price_details");
-        List<CityWisePriceObject> cityWisePriceObjectList = new ArrayList<CityWisePriceObject>();
-        if(cityWisePrice.length() > 0){
-          for(int i=0; i<cityWisePrice.length(); i++){
-            JSONObject cityWiseJSJsonObject = cityWisePrice.getJSONObject(i);
-            String city = cityWiseJSJsonObject.getString("city");
-            String price = cityWiseJSJsonObject.getString("price");
-            String storeUrl = cityWiseJSJsonObject.getString("store_url");
-            CityWisePriceObject cityWisePriceObject = new CityWisePriceObject(city, price, storeUrl);
-            cityWisePriceObjectList.add(cityWisePriceObject);
-            //Log.e("Suppliers", "\ncity :" + city + "\nprice :" + price + "\nstoreUrl :" + storeUrl);
-          }
-          //================================================================================================
+      }catch (Exception e){
+        e.printStackTrace();
+      }
+
+
+      //================================================================================================
       //****************************************************************************************************
-          ProductCity productCityCard = new ProductCity(getActivity(),cityWisePriceObjectList);
-          CardHeader header = new CardHeader(getActivity(), R.layout.city_wise);
-          productCityCard.addCardHeader(header);
-          cardsDetails.add(productCityCard);
-          cardsDetails.remove(2);
+
+      try{
+        JSONObject features = productJson.getJSONObject("features").getJSONObject("group_features");
+        Map<String, List<FeatureObject>> featureMap = new TreeMap<String, List<FeatureObject>>();
+        Iterator keys = features.keys();
+        while(keys.hasNext()) {
+          String key = keys.next().toString();
+          JSONArray featureArray = features.getJSONArray(key);
+          List<FeatureObject> indFeatureMap = new ArrayList<FeatureObject>();
+          for(int i = 0; i < featureArray.length(); i++) {
+            JSONObject jsonObject = featureArray.getJSONObject(i);
+            String name = jsonObject.getString("name");
+            String value = jsonObject.getString("value");
+            FeatureObject featureObject = new FeatureObject(name, value);
+            indFeatureMap.add(featureObject);
+          }
+          String keyValue = key.replace("_features", "").replace("_", " ");
+          featureMap.put(keyValue, indFeatureMap);
         }
+        ProductDetailsSpecifications cardProductDetailsSpecifications =
+            new ProductDetailsSpecifications(getActivity(), featureMap);
+        CardHeader header = new CardHeader(getActivity(), R.layout.description);
+        cardProductDetailsSpecifications.addCardHeader(header);
+        cardsDetails.add(cardProductDetailsSpecifications);
+        mCardArrayAdapterDetails.notifyDataSetChanged();
+      } catch (Exception e){
+
+        e.printStackTrace();
       }
-      JSONObject features = productJson.getJSONObject("features").getJSONObject("group_features");
-      Map<String, List<FeatureObject>> featureMap = new TreeMap<String, List<FeatureObject>>();
-      Iterator keys = features.keys();
-      while(keys.hasNext()) {
-        String key = keys.next().toString();
-        JSONArray featureArray = features.getJSONArray(key);
-        List<FeatureObject> indFeatureMap = new ArrayList<FeatureObject>();
-        for(int i = 0; i < featureArray.length(); i++) {
-          JSONObject jsonObject = featureArray.getJSONObject(i);
-          String name = jsonObject.getString("name");
-          String value = jsonObject.getString("value");
-          FeatureObject featureObject = new FeatureObject(name, value);
-          indFeatureMap.add(featureObject);
-        }
-        String keyValue = key.replace("_features", "").replace("_", " ");
-        featureMap.put(keyValue, indFeatureMap);
-      }
-       ProductDetailsSpecifications cardProductDetailsSpecifications =
-           new ProductDetailsSpecifications(getActivity(), featureMap);
-       CardHeader header = new CardHeader(getActivity(), R.layout.description);
-       cardProductDetailsSpecifications.addCardHeader(header);
-       cardsDetails.add(cardProductDetailsSpecifications);
-       mCardArrayAdapterDetails.notifyDataSetChanged();
 
     } catch (JSONException e) {
       Card card = new Card(getActivity());
@@ -335,7 +348,9 @@ public class ProductDetailsFragment extends Fragment {
             @Override
             public void onClick(View v) {
               String siteUrl = supplierList.get(finalPosition).getUrl();
-              Toast.makeText(context, siteUrl, Toast.LENGTH_SHORT).show();
+              Intent externalActivity = new Intent(Intent.ACTION_VIEW);
+              externalActivity.setData(Uri.parse(siteUrl));
+              startActivity(externalActivity);
             }
           });
           mySeller.addView(sellerView);
@@ -374,7 +389,9 @@ public class ProductDetailsFragment extends Fragment {
             @Override
             public void onClick(View v) {
               String siteUrl = cityWisePriceObjectList.get(finalPosition).getStoreUrl();
-              Toast.makeText(context, siteUrl, Toast.LENGTH_SHORT).show();
+              Intent externalActivity = new Intent(Intent.ACTION_VIEW);
+              externalActivity.setData(Uri.parse(siteUrl));
+              startActivity(externalActivity);
             }
           });
           mySellerCity.addView(sellerCityView);
