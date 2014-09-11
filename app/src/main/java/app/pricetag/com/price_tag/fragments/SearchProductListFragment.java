@@ -109,12 +109,13 @@ public class SearchProductListFragment extends Fragment {
           String productImage = productObject.getString("image");
           float productRating = Float.parseFloat(productObject.getString("average_rating"));
           int productSupplierCount = Integer.parseInt(productObject.getString("supplier_count"));
-
-          ProductList card = new ProductList(context, productId, productName, productPrice, productImage,
-              productRating, productSupplierCount);
-          mCardArrayAdapter.add(card);
-          mCardArrayAdapter.setNotifyOnChange(true);
-          mCardArrayAdapter.notifyDataSetChanged();
+          if(productPrice != 0){
+            ProductList card = new ProductList(context, productId, productName, productPrice, productImage,
+                productRating, productSupplierCount);
+            mCardArrayAdapter.add(card);
+            mCardArrayAdapter.setNotifyOnChange(true);
+            mCardArrayAdapter.notifyDataSetChanged();
+          }
         }
 
       } catch (JSONException e) {

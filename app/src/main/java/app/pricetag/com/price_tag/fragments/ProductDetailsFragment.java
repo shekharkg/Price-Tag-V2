@@ -22,6 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -153,6 +154,9 @@ public class ProductDetailsFragment extends Fragment {
             cardsDetails.add(productSuppliersCard);
             cardsDetails.remove(2);
             mCardArrayAdapterDetails.notifyDataSetChanged();
+          } else {
+            cardsDetails.remove(2);
+            mCardArrayAdapterDetails.notifyDataSetChanged();
           }
         } else {
           Log.e("Category else:", "+" + prodCategory + "+");
@@ -209,7 +213,6 @@ public class ProductDetailsFragment extends Fragment {
         cardsDetails.add(cardProductDetailsSpecifications);
         mCardArrayAdapterDetails.notifyDataSetChanged();
       } catch (Exception e){
-
         e.printStackTrace();
       }
 
@@ -340,9 +343,10 @@ public class ProductDetailsFragment extends Fragment {
           TextView stockTextView = (TextView) sellerView.findViewById(R.id.textView6);
           Button buyButton = (Button) sellerView.findViewById(R.id.button);
           Ion.with(imageView).placeholder(R.drawable.ic_launcher).error(R.drawable.ic_launcher).load(supplierList.get(position).getStoreImage());
-          titleTextView.setText(supplierList.get(position).getName() + " : ");
+          titleTextView.setText(supplierList.get(position).getName() + " :");
           stockTextView.setText(supplierList.get(position).getStockInfo());
-          priceTextView.setText("Rs. " + supplierList.get(position).getPrice());
+          double pri = Double.parseDouble(supplierList.get(position).getPrice());
+          priceTextView.setText("Rs. " + NumberFormat.getNumberInstance().format(pri));
           final int finalPosition = position;
           buyButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -383,7 +387,8 @@ public class ProductDetailsFragment extends Fragment {
           TextView priceTextView = (TextView) sellerCityView.findViewById(R.id.textView4);
           Button buyButton = (Button) sellerCityView.findViewById(R.id.button);
           cityTextView.setText(cityWisePriceObjectList.get(position).getCity());
-          priceTextView.setText("Rs. " + cityWisePriceObjectList.get(position).getPrice());
+          double pri = Double.parseDouble(cityWisePriceObjectList.get(position).getPrice());
+          priceTextView.setText("Rs. " + NumberFormat.getNumberInstance().format(pri));
           final int finalPosition = position;
           buyButton.setOnClickListener(new View.OnClickListener() {
             @Override
