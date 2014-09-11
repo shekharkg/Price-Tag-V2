@@ -268,7 +268,7 @@ public class ProductDetailsFragment extends Fragment {
           try {
             imageObject = imageArray.getJSONObject(i);
             imageStringUrl = imageObject.getString("large_image");
-            mPagedHeadList.addFragmentToHeader(new ImageHeaderFragment(this.getContext()));
+            mPagedHeadList.addFragmentToHeader(new ImageHeaderFragment());
           } catch (JSONException e) {
             e.printStackTrace();
           }
@@ -353,7 +353,7 @@ public class ProductDetailsFragment extends Fragment {
           TextView titleTextView = (TextView) sellerView.findViewById(R.id.textView4);
           TextView stockTextView = (TextView) sellerView.findViewById(R.id.textView6);
           Button buyButton = (Button) sellerView.findViewById(R.id.button);
-          Ion.with(imageView).placeholder(R.drawable.loading).error(R.drawable.loading).load(supplierList.get(position).getStoreImage());
+          Ion.with(imageView).placeholder(R.drawable.ic_launcher).error(R.drawable.ic_launcher).load(supplierList.get(position).getStoreImage());
           titleTextView.setText(supplierList.get(position).getName() + " :");
           stockTextView.setText(supplierList.get(position).getStockInfo());
           double pri = Double.parseDouble(supplierList.get(position).getPrice());

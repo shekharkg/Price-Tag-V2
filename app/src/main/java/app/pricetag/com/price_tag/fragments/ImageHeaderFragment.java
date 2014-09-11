@@ -21,7 +21,7 @@ public class ImageHeaderFragment extends Fragment {
   private View rootView;
   private String imageStringUrl;
 
-  public ImageHeaderFragment(Context context) {
+  public ImageHeaderFragment() {
     this.imageStringUrl = ProductDetailsFragment.imageStringUrl;
   }
 
@@ -34,7 +34,7 @@ public class ImageHeaderFragment extends Fragment {
   public void onActivityCreated(Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
     ImageView imageView = (ImageView) rootView.findViewById(R.id.image_head);
-    Ion.with(imageView).placeholder(R.drawable.loading).error(R.drawable.loading).load(imageStringUrl);
+    Ion.with(imageView).placeholder(R.drawable.ic_launcher).error(R.drawable.ic_launcher).load(imageStringUrl);
 
   }
 }
