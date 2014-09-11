@@ -60,6 +60,7 @@ public class ProductListFragment extends Fragment {
   int connected;
   ProductListFragment fragment;
 
+
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     this.context = inflater.getContext();

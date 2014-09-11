@@ -1,5 +1,6 @@
 package app.pricetag.com.price_tag.fragments;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
@@ -362,7 +363,11 @@ public class ProductDetailsFragment extends Fragment {
             @Override
             public void onClick(View v) {
               String sellerSiteUrl = supplierList.get(finalPosition).getUrl();
-              new SellerUrlParser().execute(sellerSiteUrl);
+              connected = connectedToInternetOrNot.ConnectedToInternetOrNot(getActivity());
+              if (connected == 1) {
+                new SellerUrlParser().execute(sellerSiteUrl);
+                Crouton.cancelAllCroutons();
+              }
             }
           });
           mySeller.addView(sellerView);
@@ -417,15 +422,18 @@ public class ProductDetailsFragment extends Fragment {
 
   class SellerUrlParser extends AsyncTask<String, Void, Document> {
 
-    Dialog dialog;
+    AlertDialog.Builder dialog;
+    Dialog dialogRedirect;
 
     @Override
     protected void onPreExecute() {
       // TODO Auto-generated method stub
       super.onPreExecute();
-      dialog = new ProgressDialog(getActivity());
-      dialog.setTitle("Redirecting...");
-      dialog.show();
+      final LayoutInflater inflater = getActivity().getLayoutInflater();
+      final View viewDialogRedirect = inflater.inflate(R.layout.redirecting, null);
+      dialog = new AlertDialog.Builder(getActivity());
+      dialog.setView(viewDialogRedirect);
+      dialogRedirect = dialog.show();
     }
 
     @Override
@@ -433,21 +441,25 @@ public class ProductDetailsFragment extends Fragment {
       Document doc = null;
       try {
         doc = Jsoup.connect(urls[0]).userAgent("Mozilla").get();
+        return doc;
       } catch (IOException e) {
         e.printStackTrace();
-        return doc;
       }
       return doc;
     }
 
     @Override
     protected void onPostExecute(Document doc) {
-      Elements title_url = doc.select("a");
-      String gotoUrl = title_url.attr("abs:href");
-      Intent externalActivity = new Intent(Intent.ACTION_VIEW);
-      externalActivity.setData(Uri.parse(gotoUrl));
-      dialog.dismiss();
-      startActivity(externalActivity);
+      if(doc != null){
+        Elements title_url = doc.select("a");
+        String gotoUrl = title_url.attr("abs:href");
+        dialogRedirect.dismiss();
+        Intent externalActivity = new Intent(Intent.ACTION_VIEW);
+        externalActivity.setData(Uri.parse(gotoUrl));
+        startActivity(externalActivity);
+      }
+      else
+        dialogRedirect.dismiss();
     }
   }
 
