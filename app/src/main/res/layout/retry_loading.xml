@@ -3,16 +3,16 @@
                 android:layout_height="fill_parent"
                 android:layout_width="fill_parent"
                 android:background="@color/almost_white_bg"
-                android:padding="12dp"
                 android:gravity="center"
                 android:baselineAligned="true">
 
 
     <ImageView
-        android:layout_width="75dp"
-        android:layout_height="75dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:id="@+id/imageView"
-        android:src="@drawable/ic_launcher"
+        android:src="@drawable/retry"
+        android:layout_marginLeft="5dp"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/textWrong"
         android:layout_toEndOf="@+id/textWrong"/>
@@ -20,10 +20,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:gravity="center_horizontal"
-        android:textSize="24sp"
+        android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="@color/material_teal"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:text="Something went wrong."
         android:id="@+id/textWrong"
         android:layout_alignParentTop="true"/>
@@ -31,16 +31,14 @@
     <TextView
         android:layout_width="wrap_content"
         android:gravity="center_horizontal"
-        android:textSize="24sp"
+        android:textSize="18sp"
         android:textStyle="bold"
+        android:layout_marginLeft="25dp"
         android:textColor="@color/material_teal"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:text="Tap to retry."
         android:id="@+id/textRetry"
-        android:layout_alignBottom="@+id/imageView"
-        android:layout_alignRight="@+id/textWrong"
-        android:layout_alignEnd="@+id/textWrong"
-        android:layout_marginRight="60dp"/>
+        android:layout_below="@+id/textWrong"/>
 
 </RelativeLayout>
 

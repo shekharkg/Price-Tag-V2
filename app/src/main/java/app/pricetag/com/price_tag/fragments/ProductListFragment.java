@@ -245,7 +245,7 @@ public class ProductListFragment extends Fragment {
         TextView saveupto = (TextView) parent.findViewById(R.id.product_saveupto);
 
         if (title != null){
-          Ion.with(circularImageView).placeholder(R.drawable.ic_launcher).error(R.drawable.ic_launcher).load(productImage);
+          Ion.with(circularImageView).placeholder(R.drawable.loading).error(R.drawable.loading).load(productImage);
           title.setText(productName);
           ratingBar.setRating(productRating);
           seller.setText(productSupplierCount + " seller found");

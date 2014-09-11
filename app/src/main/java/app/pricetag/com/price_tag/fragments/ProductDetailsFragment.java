@@ -1,9 +1,12 @@
 package app.pricetag.com.price_tag.fragments;
 
+import android.app.Dialog;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,7 +24,11 @@ import com.koushikdutta.ion.Ion;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -176,6 +183,9 @@ public class ProductDetailsFragment extends Fragment {
             CardHeader header = new CardHeader(getActivity(), R.layout.city_wise);
             productCityCard.addCardHeader(header);
             cardsDetails.add(productCityCard);
+            cardsDetails.remove(2);
+            mCardArrayAdapterDetails.notifyDataSetChanged();
+          } else {
             cardsDetails.remove(2);
             mCardArrayAdapterDetails.notifyDataSetChanged();
           }
@@ -342,7 +352,7 @@ public class ProductDetailsFragment extends Fragment {
           TextView titleTextView = (TextView) sellerView.findViewById(R.id.textView4);
           TextView stockTextView = (TextView) sellerView.findViewById(R.id.textView6);
           Button buyButton = (Button) sellerView.findViewById(R.id.button);
-          Ion.with(imageView).placeholder(R.drawable.ic_launcher).error(R.drawable.ic_launcher).load(supplierList.get(position).getStoreImage());
+          Ion.with(imageView).placeholder(R.drawable.loading).error(R.drawable.loading).load(supplierList.get(position).getStoreImage());
           titleTextView.setText(supplierList.get(position).getName() + " :");
           stockTextView.setText(supplierList.get(position).getStockInfo());
           double pri = Double.parseDouble(supplierList.get(position).getPrice());
@@ -351,10 +361,8 @@ public class ProductDetailsFragment extends Fragment {
           buyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              String siteUrl = supplierList.get(finalPosition).getUrl();
-              Intent externalActivity = new Intent(Intent.ACTION_VIEW);
-              externalActivity.setData(Uri.parse(siteUrl));
-              startActivity(externalActivity);
+              String sellerSiteUrl = supplierList.get(finalPosition).getUrl();
+              new SellerUrlParser().execute(sellerSiteUrl);
             }
           });
           mySeller.addView(sellerView);
@@ -405,6 +413,42 @@ public class ProductDetailsFragment extends Fragment {
       }
     }
 
+  }
+
+  class SellerUrlParser extends AsyncTask<String, Void, Document> {
+
+    Dialog dialog;
+
+    @Override
+    protected void onPreExecute() {
+      // TODO Auto-generated method stub
+      super.onPreExecute();
+      dialog = new ProgressDialog(getActivity());
+      dialog.setTitle("Redirecting...");
+      dialog.show();
+    }
+
+    @Override
+    protected Document doInBackground(String... urls) {
+      Document doc = null;
+      try {
+        doc = Jsoup.connect(urls[0]).userAgent("Mozilla").get();
+      } catch (IOException e) {
+        e.printStackTrace();
+        return doc;
+      }
+      return doc;
+    }
+
+    @Override
+    protected void onPostExecute(Document doc) {
+      Elements title_url = doc.select("a");
+      String gotoUrl = title_url.attr("abs:href");
+      Intent externalActivity = new Intent(Intent.ACTION_VIEW);
+      externalActivity.setData(Uri.parse(gotoUrl));
+      dialog.dismiss();
+      startActivity(externalActivity);
+    }
   }
 
 }
