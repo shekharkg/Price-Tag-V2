@@ -441,25 +441,21 @@ public class ProductDetailsFragment extends Fragment {
       Document doc = null;
       try {
         doc = Jsoup.connect(urls[0]).userAgent("Mozilla").get();
-        return doc;
       } catch (IOException e) {
         e.printStackTrace();
+        return doc;
       }
       return doc;
     }
 
     @Override
     protected void onPostExecute(Document doc) {
-      if(doc != null){
         Elements title_url = doc.select("a");
         String gotoUrl = title_url.attr("abs:href");
         dialogRedirect.dismiss();
         Intent externalActivity = new Intent(Intent.ACTION_VIEW);
         externalActivity.setData(Uri.parse(gotoUrl));
         startActivity(externalActivity);
-      }
-      else
-        dialogRedirect.dismiss();
     }
   }
 

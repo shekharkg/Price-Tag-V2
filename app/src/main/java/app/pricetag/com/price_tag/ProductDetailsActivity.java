@@ -48,7 +48,7 @@ public class ProductDetailsActivity extends FragmentActivity {
     imageUrl = imageUrl + productId;
     getFragmentManager().beginTransaction().replace(R.id.content_frame,new ProductDetailsFragment()).commit();
     stringShare =  "Compare price of \"" + productName
-        + "\" across different sites.\n \n \nGet the app at Play Store \n\n https://play.google.com/store/apps/details?id=com.pricetag.app";
+        + "\" across different sites.\n \n \nGet the app at Play Store \n\n https://play.google.com/store/apps/details?id=app.pricetag.com";
   }
 
   @Override
