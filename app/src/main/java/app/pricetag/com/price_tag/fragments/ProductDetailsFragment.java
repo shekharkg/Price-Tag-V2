@@ -1,13 +1,9 @@
 package app.pricetag.com.price_tag.fragments;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.Fragment;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,11 +21,7 @@ import com.koushikdutta.ion.Ion;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 
-import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -365,7 +357,9 @@ public class ProductDetailsFragment extends Fragment {
               String sellerSiteUrl = supplierList.get(finalPosition).getUrl();
               connected = connectedToInternetOrNot.ConnectedToInternetOrNot(getActivity());
               if (connected == 1) {
-                new SellerUrlParser().execute(sellerSiteUrl);
+                Intent externalActivity = new Intent(Intent.ACTION_VIEW);
+                externalActivity.setData(Uri.parse(sellerSiteUrl));
+                startActivity(externalActivity);
                 Crouton.cancelAllCroutons();
               }
             }
@@ -418,45 +412,6 @@ public class ProductDetailsFragment extends Fragment {
       }
     }
 
-  }
-
-  class SellerUrlParser extends AsyncTask<String, Void, Document> {
-
-    AlertDialog.Builder dialog;
-    Dialog dialogRedirect;
-
-    @Override
-    protected void onPreExecute() {
-      // TODO Auto-generated method stub
-      super.onPreExecute();
-      final LayoutInflater inflater = getActivity().getLayoutInflater();
-      final View viewDialogRedirect = inflater.inflate(R.layout.redirecting, null);
-      dialog = new AlertDialog.Builder(getActivity());
-      dialog.setView(viewDialogRedirect);
-      dialogRedirect = dialog.show();
-    }
-
-    @Override
-    protected Document doInBackground(String... urls) {
-      Document doc = null;
-      try {
-        doc = Jsoup.connect(urls[0]).userAgent("Mozilla").get();
-      } catch (IOException e) {
-        e.printStackTrace();
-        return doc;
-      }
-      return doc;
-    }
-
-    @Override
-    protected void onPostExecute(Document doc) {
-        Elements title_url = doc.select("a");
-        String gotoUrl = title_url.attr("abs:href");
-        dialogRedirect.dismiss();
-        Intent externalActivity = new Intent(Intent.ACTION_VIEW);
-        externalActivity.setData(Uri.parse(gotoUrl));
-        startActivity(externalActivity);
-    }
   }
 
 }
